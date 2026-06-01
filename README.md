@@ -240,15 +240,15 @@ npm run dev
 
 ### Login
 
-![Login](./screenshots/login.png)
+![Login](./Screenshots/login.png)
 
 ### Dashboard
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./Screenshots/dashboard.png)
 
 ### Expenses
 
-![Expenses](./screenshots/expenses.png)
+![Expenses](./Screenshots/expenses.png)
 
 ## Notes
 
