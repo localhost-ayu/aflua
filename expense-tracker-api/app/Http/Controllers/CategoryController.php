@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // Apenas listagem, categorias são pré-definidas, o usuário não cria nem edita
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = $request->user()->categories()->orderBy('name')->get();
 
         return response()->json($categories);
     }

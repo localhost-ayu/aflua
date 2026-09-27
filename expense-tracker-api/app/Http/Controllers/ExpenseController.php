@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ExpenseController extends Controller
 {
@@ -42,7 +43,7 @@ class ExpenseController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'category_id'  => 'required|exists:categories,id',
+            'category_id'  => ['required', Rule::exists('categories', 'id')->where('user_id', $request->user()->id)],
             'amount'       => 'required|numeric|min:0.01',
             'description'  => 'required|string|max:255',
             'expense_date' => 'required|date',
@@ -74,7 +75,7 @@ class ExpenseController extends Controller
         }
 
         $validated = $request->validate([
-            'category_id'  => 'sometimes|exists:categories,id',
+            'category_id'  => ['sometimes', Rule::exists('categories', 'id')->where('user_id', $request->user()->id)],
             'amount'       => 'sometimes|numeric|min:0.01',
             'description'  => 'sometimes|string|max:255',
             'expense_date' => 'sometimes|date',

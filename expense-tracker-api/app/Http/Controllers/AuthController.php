@@ -7,6 +7,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use App\Support\DefaultCategories;
 
 class AuthController extends Controller
 {
@@ -18,7 +20,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::create($validated);
+        $user = DB::transaction(function () use ($validated) {
+            $user = User::create($validated);
+            DefaultCategories::createFor($user);
+
+            return $user;
+        });
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
