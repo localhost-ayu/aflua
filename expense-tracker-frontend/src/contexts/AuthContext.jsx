@@ -5,7 +5,7 @@ const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
-  const [loading, setLoading] = useState(true) // começa true — precisa verificar o token
+  const [loading, setLoading] = useState(() => !!localStorage.getItem('token'))
 
   // Ao montar, verifica se já existe um token válido
   useEffect(() => {
@@ -15,8 +15,6 @@ export function AuthProvider({ children }) {
         .then((res) => setUser(res.data))
         .catch(() => localStorage.removeItem('token'))
         .finally(() => setLoading(false))
-    } else {
-      setLoading(false)
     }
   }, [])
 
