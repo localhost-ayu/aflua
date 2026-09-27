@@ -28,6 +28,7 @@ export default function LoginPage() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
+        <div className="auth-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></div>
         <h1>Bem-vindo de volta</h1>
         <p>Entre na sua conta para continuar</p>
 

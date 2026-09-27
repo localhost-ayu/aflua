@@ -15,7 +15,7 @@ export default function Navbar() {
       <div className="container">
         <div className="navbar-inner">
           <Link to="/dashboard" className="navbar-brand">
-            💰 Expense Tracker
+            <span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span>
           </Link>
 
           <div className="navbar-links">

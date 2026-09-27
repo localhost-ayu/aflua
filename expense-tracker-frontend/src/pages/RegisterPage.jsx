@@ -30,6 +30,7 @@ export default function RegisterPage() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
+        <div className="auth-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></div>
         <h1>Criar conta</h1>
         <p>Comece a controlar seus gastos hoje</p>
 
