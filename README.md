@@ -1,6 +1,8 @@
-# Expense Tracker
+# cifra
 
 A full-stack expense management application built with Laravel and React. The application allows users to manage personal expenses, organize spending by categories, and analyze financial data through interactive dashboards and charts.
+
+The repository remains named `expense-tracker`; the application is branded **cifra**.
 
 ## Features
 
@@ -33,6 +35,8 @@ A full-stack expense management application built with Laravel and React. The ap
 * Last 6 months spending history
 * Month and year filters
 * Interactive charts powered by Recharts
+* Warm light and graphite dark themes
+* Portuguese (Brazil) and English interface
 
 ## Tech Stack
 
@@ -252,7 +256,7 @@ npm run dev
 
 ## Notes
 
-The application's user interface and comments are written in Brazilian Portuguese (pt-BR).
+The application's interface supports Brazilian Portuguese (pt-BR) and English. The selected language and theme are saved in the browser.
 
 Source code follows English naming conventions for variables, functions, components, and API endpoints to improve readability and maintainability.
 
@@ -262,7 +266,6 @@ Source code follows English naming conventions for variables, functions, compone
 * Financial goals
 * Recurring expenses
 * Export reports
-* Dark mode
 * Advanced financial analytics
 
 ## Author
