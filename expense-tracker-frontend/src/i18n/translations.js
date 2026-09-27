@@ -6,7 +6,7 @@ export const translations = {
     overviewKicker: 'Seu panorama', recordsKicker: 'Seus registros', totalSpent: 'Total gasto em {period}', byCategory: 'Gastos por categoria', lastSixMonths: 'Últimos 6 meses',
     newExpense: 'Nova despesa', editExpense: 'Editar despesa', category: 'Categoria', allCategories: 'Todas', month: 'Mês', allMonths: 'Todos', year: 'Ano', allYears: 'Todos', clearFilters: 'Limpar filtros', noExpenses: 'Nenhuma despesa encontrada.', noExpensesMonth: 'Nenhuma despesa neste mês.', noChartData: 'Nenhum dado disponível.',
     date: 'Data', description: 'Descrição', amount: 'Valor', amountBrl: 'Valor (R$)', actions: 'Ações', edit: 'Editar', delete: 'Excluir', deleteConfirm: 'Deseja excluir esta despesa?', chooseCategory: 'Selecione...', descriptionExample: 'Ex: Almoço no restaurante', cancel: 'Cancelar', saveChanges: 'Salvar alterações', add: 'Adicionar', saving: 'Salvando...',
-    loading: 'Carregando...', loadError: 'Erro ao carregar dados.', genericError: 'Ocorreu um erro. Tente novamente.', created: 'Despesa adicionada.', updated: 'Despesa atualizada.', deleted: 'Despesa excluída.', deleteError: 'Não foi possível excluir a despesa.',
+    loading: 'Carregando...', loadError: 'Erro ao carregar dados.', genericError: 'Ocorreu um erro. Tente novamente.', invalidField: 'Confira este campo e tente novamente.', invalidCredentials: 'E-mail ou senha incorretos.', created: 'Despesa adicionada.', updated: 'Despesa atualizada.', deleted: 'Despesa excluída.', deleteError: 'Não foi possível excluir a despesa.',
     catFood: 'Alimentação', catTransport: 'Transporte', catHousing: 'Moradia', catHealth: 'Saúde', catLeisure: 'Lazer', catOther: 'Outros',
   },
   en: {
@@ -16,7 +16,7 @@ export const translations = {
     overviewKicker: 'Your picture', recordsKicker: 'Your records', totalSpent: 'Total spent in {period}', byCategory: 'Spending by category', lastSixMonths: 'Last 6 months',
     newExpense: 'New expense', editExpense: 'Edit expense', category: 'Category', allCategories: 'All', month: 'Month', allMonths: 'All', year: 'Year', allYears: 'All', clearFilters: 'Clear filters', noExpenses: 'No expenses found.', noExpensesMonth: 'No expenses this month.', noChartData: 'No data available.',
     date: 'Date', description: 'Description', amount: 'Amount', amountBrl: 'Amount (BRL)', actions: 'Actions', edit: 'Edit', delete: 'Delete', deleteConfirm: 'Delete this expense?', chooseCategory: 'Choose a category...', descriptionExample: 'E.g. Lunch at a restaurant', cancel: 'Cancel', saveChanges: 'Save changes', add: 'Add expense', saving: 'Saving...',
-    loading: 'Loading...', loadError: 'Could not load data.', genericError: 'Something went wrong. Please try again.', created: 'Expense added.', updated: 'Expense updated.', deleted: 'Expense deleted.', deleteError: 'Could not delete the expense.',
+    loading: 'Loading...', loadError: 'Could not load data.', genericError: 'Something went wrong. Please try again.', invalidField: 'Check this field and try again.', invalidCredentials: 'Incorrect email or password.', created: 'Expense added.', updated: 'Expense updated.', deleted: 'Expense deleted.', deleteError: 'Could not delete the expense.',
     catFood: 'Food', catTransport: 'Transport', catHousing: 'Housing', catHealth: 'Health', catLeisure: 'Leisure', catOther: 'Other',
   },
 }

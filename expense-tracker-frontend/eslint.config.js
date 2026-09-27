@@ -18,4 +18,8 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    files: ['src/contexts/*.jsx', 'src/i18n/I18nContext.jsx'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
 ])

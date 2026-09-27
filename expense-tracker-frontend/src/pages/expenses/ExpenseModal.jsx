@@ -1,24 +1,37 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFetch } from '../../hooks/useFetch'
 import { useFormErrors } from '../../hooks/useFormErrors'
 import { useI18n } from '../../i18n/I18nContext'
 import api from '../../api/axios'
 
-export default function ExpenseModal({ expense, onClose, onSuccess }) {
+export default function ExpenseModal({ expense, closing, onClose, onSuccess }) {
   const isEditing = !!expense
   const [categoryId, setCategoryId] = useState(expense?.category_id ?? '')
   const [amount, setAmount] = useState(expense?.amount ?? '')
   const [description, setDescription] = useState(expense?.description ?? '')
   const [expenseDate, setExpenseDate] = useState(expense?.expense_date?.substring(0, 10) ?? new Date().toISOString().substring(0, 10))
   const [loading, setLoading] = useState(false)
+  const dialogRef = useRef(null)
   const { data: categories } = useFetch('/categories')
   const { errors, globalError, handleApiError } = useFormErrors()
   const { t, categoryName } = useI18n()
 
   useEffect(() => {
-    function onKeyDown(event) { if (event.key === 'Escape') onClose() }
+    const previousFocus = document.activeElement
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    dialogRef.current?.querySelector('select, input, button')?.focus()
+    function onKeyDown(event) {
+      if (event.key === 'Escape') onClose()
+      if (event.key !== 'Tab') return
+      const focusable = [...dialogRef.current.querySelectorAll('button:not(:disabled), input:not(:disabled), select:not(:disabled)')]
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
     document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+    return () => { document.removeEventListener('keydown', onKeyDown); document.body.style.overflow = previousOverflow; previousFocus?.focus() }
   }, [onClose])
 
   async function handleSubmit(event) {
@@ -33,7 +46,7 @@ export default function ExpenseModal({ expense, onClose, onSuccess }) {
     finally { setLoading(false) }
   }
 
-  return <div className="modal-overlay" onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}><div className="modal-card" role="dialog" aria-modal="true" aria-labelledby="expense-modal-title">
+  return <div className={`modal-overlay ${closing ? 'is-closing' : ''}`} onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}><div ref={dialogRef} className="modal-card" role="dialog" aria-modal="true" aria-labelledby="expense-modal-title">
     <div className="modal-header"><h3 id="expense-modal-title">{t(isEditing ? 'editExpense' : 'newExpense')}</h3><button type="button" className="icon-button" onClick={onClose} aria-label={t('cancel')}>×</button></div>
     {globalError && <div className="alert alert-error" role="alert">{globalError}</div>}
     <form onSubmit={handleSubmit}>

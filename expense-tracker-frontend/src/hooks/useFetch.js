@@ -1,29 +1,35 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import api from '../api/axios'
 import { useI18n } from '../i18n/I18nContext'
 
 export function useFetch(url) {
   const { t } = useI18n()
-  const [data, setData]       = useState(null)
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError]     = useState(null)
+  const [error, setError] = useState(null)
+  const requestId = useRef(0)
 
-  const fetch = useCallback(async () => {
+  const refetch = useCallback(async () => {
+    const current = ++requestId.current
     setLoading(true)
     setError(null)
     try {
-      const res = await api.get(url)
-      setData(res.data)
-    } catch (err) {
-      setError(err.response?.data?.message || t('loadError'))
+      const response = await api.get(url)
+      if (current === requestId.current) setData(response.data)
+    } catch {
+      if (current === requestId.current) setError(t('loadError'))
     } finally {
-      setLoading(false)
+      if (current === requestId.current) setLoading(false)
     }
   }, [url, t])
 
   useEffect(() => {
-    fetch()
-  }, [fetch])
+    // The request updates loading asynchronously; the effect also invalidates older responses.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    refetch()
+    const sequence = requestId
+    return () => { sequence.current++ }
+  }, [refetch])
 
-  return { data, loading, error, refetch: fetch }
+  return { data, loading, error, refetch }
 }
