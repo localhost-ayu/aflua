@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useI18n } from '../i18n/I18nContext'
 
 export function useFormErrors() {
+  const { t } = useI18n()
   const [errors, setErrors]         = useState({})
   const [globalError, setGlobalError] = useState('')
 
@@ -21,7 +23,7 @@ export function useFormErrors() {
     } else {
       // Qualquer outro erro (500, 403, etc.) vira uma mensagem geral
       setGlobalError(
-        error.response?.data?.message || 'Ocorreu um erro. Tente novamente.'
+        error.response?.data?.message || t('genericError')
       )
       setErrors({})
     }

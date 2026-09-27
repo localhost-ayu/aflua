@@ -59,6 +59,7 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .auth-wrapper { min-height: 100vh; display: grid; place-items: center; padding: 2rem 1rem; background: var(--surface-2); }
 .auth-card { position: relative; width: min(100%, 440px); padding: 2.75rem; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--shadow-sm); }
 .auth-theme { position: absolute; top: 2.75rem; right: 2.75rem; }
+.auth-tools { position: absolute; top: 2.75rem; right: 2.75rem; display: flex; align-items: center; gap: .4rem; }
 .auth-card h1 { font-size: 2rem; line-height: 1.18; margin: 0 0 .5rem; }
 .auth-card > p { color: var(--text-2); margin-bottom: 2rem; }
 .auth-brand, .navbar-brand { display: inline-flex; align-items: center; gap: .65rem; color: var(--text-1); text-decoration: none; }
@@ -97,6 +98,7 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .navbar-divider { height: 22px; width: 1px; margin: 0 .5rem; background: var(--border); }
 .icon-button { background: transparent; border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-1); min-width: 36px; min-height: 36px; }
 .icon-button:hover { background: var(--surface-3); }
+.language-select { min-height: 36px; padding: .25rem .4rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-1); font-size: .77rem; font-weight: 700; cursor: pointer; }
 
 .page-header { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.7rem; }
 .page-header h2 { font-size: clamp(1.85rem, 3vw, 2.35rem); letter-spacing: -.035em; margin: 0; }
@@ -144,4 +146,5 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
   .grid-2 { grid-template-columns: 1fr; }
   .auth-card { padding: 2rem 1.5rem; }
   .auth-theme { top: 2rem; right: 1.5rem; }
+  .auth-tools { top: 2rem; right: 1.5rem; }
 }

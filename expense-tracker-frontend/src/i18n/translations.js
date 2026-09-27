@@ -1,0 +1,24 @@
+export const translations = {
+  'pt-BR': {
+    dashboard: 'Visão geral', expenses: 'Despesas', logout: 'Sair', lightMode: 'Ativar modo claro', darkMode: 'Ativar modo escuro', language: 'Idioma',
+    welcome: 'Bem-vindo de volta', welcomeSubtitle: 'Entre na sua conta para continuar', email: 'E-mail', password: 'Senha', signIn: 'Entrar', signingIn: 'Entrando...', noAccount: 'Não tem conta?', signUp: 'Cadastre-se',
+    createAccount: 'Criar conta', createSubtitle: 'Comece a cuidar das suas finanças hoje', name: 'Nome', yourName: 'Seu nome', minPassword: 'Mínimo 8 caracteres', confirmPassword: 'Confirmar senha', repeatPassword: 'Repita a senha', creatingAccount: 'Criando conta...', haveAccount: 'Já tem conta?',
+    overviewKicker: 'Seu panorama', recordsKicker: 'Seus registros', totalSpent: 'Total gasto em {period}', byCategory: 'Gastos por categoria', lastSixMonths: 'Últimos 6 meses',
+    newExpense: 'Nova despesa', editExpense: 'Editar despesa', category: 'Categoria', allCategories: 'Todas', month: 'Mês', allMonths: 'Todos', year: 'Ano', allYears: 'Todos', clearFilters: 'Limpar filtros', noExpenses: 'Nenhuma despesa encontrada.', noExpensesMonth: 'Nenhuma despesa neste mês.', noChartData: 'Nenhum dado disponível.',
+    date: 'Data', description: 'Descrição', amount: 'Valor', amountBrl: 'Valor (R$)', actions: 'Ações', edit: 'Editar', delete: 'Excluir', deleteConfirm: 'Deseja excluir esta despesa?', chooseCategory: 'Selecione...', descriptionExample: 'Ex: Almoço no restaurante', cancel: 'Cancelar', saveChanges: 'Salvar alterações', add: 'Adicionar', saving: 'Salvando...',
+    loading: 'Carregando...', loadError: 'Erro ao carregar dados.', genericError: 'Ocorreu um erro. Tente novamente.', created: 'Despesa adicionada.', updated: 'Despesa atualizada.', deleted: 'Despesa excluída.', deleteError: 'Não foi possível excluir a despesa.',
+    catFood: 'Alimentação', catTransport: 'Transporte', catHousing: 'Moradia', catHealth: 'Saúde', catLeisure: 'Lazer', catOther: 'Outros',
+  },
+  en: {
+    dashboard: 'Overview', expenses: 'Expenses', logout: 'Log out', lightMode: 'Switch to light mode', darkMode: 'Switch to dark mode', language: 'Language',
+    welcome: 'Welcome back', welcomeSubtitle: 'Sign in to continue', email: 'Email', password: 'Password', signIn: 'Sign in', signingIn: 'Signing in...', noAccount: 'New here?', signUp: 'Create an account',
+    createAccount: 'Create an account', createSubtitle: 'Start taking care of your finances today', name: 'Name', yourName: 'Your name', minPassword: 'At least 8 characters', confirmPassword: 'Confirm password', repeatPassword: 'Repeat your password', creatingAccount: 'Creating account...', haveAccount: 'Already have an account?',
+    overviewKicker: 'Your picture', recordsKicker: 'Your records', totalSpent: 'Total spent in {period}', byCategory: 'Spending by category', lastSixMonths: 'Last 6 months',
+    newExpense: 'New expense', editExpense: 'Edit expense', category: 'Category', allCategories: 'All', month: 'Month', allMonths: 'All', year: 'Year', allYears: 'All', clearFilters: 'Clear filters', noExpenses: 'No expenses found.', noExpensesMonth: 'No expenses this month.', noChartData: 'No data available.',
+    date: 'Date', description: 'Description', amount: 'Amount', amountBrl: 'Amount (BRL)', actions: 'Actions', edit: 'Edit', delete: 'Delete', deleteConfirm: 'Delete this expense?', chooseCategory: 'Choose a category...', descriptionExample: 'E.g. Lunch at a restaurant', cancel: 'Cancel', saveChanges: 'Save changes', add: 'Add expense', saving: 'Saving...',
+    loading: 'Loading...', loadError: 'Could not load data.', genericError: 'Something went wrong. Please try again.', created: 'Expense added.', updated: 'Expense updated.', deleted: 'Expense deleted.', deleteError: 'Could not delete the expense.',
+    catFood: 'Food', catTransport: 'Transport', catHousing: 'Housing', catHealth: 'Health', catLeisure: 'Leisure', catOther: 'Other',
+  },
+}
+
+export const categoryKeys = { 'Alimentação': 'catFood', Transporte: 'catTransport', Moradia: 'catHousing', 'Saúde': 'catHealth', Lazer: 'catLeisure', Outros: 'catOther' }
