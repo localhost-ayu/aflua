@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Support\DefaultCategories;
+use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -123,5 +124,53 @@ class CategoryOwnershipTest extends TestCase
         $this->deleteJson("/api/categories/{$category->id}")
             ->assertStatus(409)->assertJsonPath('message', 'category_in_use');
         $this->assertModelExists($category);
+    }
+
+    public function test_backfill_is_idempotent_and_preserves_customized_catalogs(): void
+    {
+        $existing = User::factory()->create();
+        $new = User::factory()->create();
+        $custom = $existing->categories()->create(['name' => 'Custom', 'color' => '#123456']);
+
+        $this->seed(CategorySeeder::class);
+        $this->seed(CategorySeeder::class);
+
+        $this->assertSame(1, $existing->categories()->count());
+        $this->assertSame('Custom', $custom->fresh()->name);
+        $this->assertSame(count(DefaultCategories::definitions()), $new->categories()->count());
+    }
+
+    public function test_automatic_colors_do_not_repeat_adjacent_categories(): void
+    {
+        $user = User::factory()->create();
+        DefaultCategories::createFor($user);
+        $user->categories()->latest('id')->firstOrFail()->update([
+            'color' => DefaultCategories::colorAt($user->categories()->count()),
+        ]);
+        $lastColor = $user->categories()->latest('id')->value('color');
+
+        $response = $this->actingAs($user, 'sanctum')->postJson('/api/categories', ['name' => 'Pets'])
+            ->assertCreated();
+        $this->assertNotSame($lastColor, $response->json('color'));
+    }
+
+    public function test_expense_update_cannot_attach_another_users_category(): void
+    {
+        $ana = User::factory()->create();
+        $bia = User::factory()->create();
+        DefaultCategories::createFor($ana);
+        DefaultCategories::createFor($bia);
+        $category = $ana->categories()->firstOrFail();
+        $expense = $ana->expenses()->create([
+            'category_id' => $category->id,
+            'amount' => '45.67',
+            'description' => 'Original',
+            'expense_date' => '2026-09-27',
+        ]);
+
+        $this->actingAs($ana, 'sanctum')
+            ->putJson("/api/expenses/{$expense->id}", ['category_id' => $bia->categories()->value('id')])
+            ->assertUnprocessable();
+        $this->assertSame($category->id, $expense->fresh()->category_id);
     }
 }
