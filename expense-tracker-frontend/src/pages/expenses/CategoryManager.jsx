@@ -2,7 +2,7 @@ import { useState } from 'react'
 import api from '../../api/axios'
 import { useI18n } from '../../i18n/I18nContext'
 
-export default function CategoryManager({ categories = [], onChanged, onFeedback }) {
+export default function CategoryManager({ categories = [], loading, error, onChanged, onFeedback }) {
   const { t, categoryName } = useI18n()
   const [name, setName] = useState('')
   const [editingId, setEditingId] = useState(null)
@@ -63,7 +63,9 @@ export default function CategoryManager({ categories = [], onChanged, onFeedback
   return <details className="card category-manager mb-3">
     <summary>{t('manageCategories')}</summary>
     <p className="category-help">{t('categoryHelp')}</p>
-    <ul className="category-list">
+    {error && <div className="alert alert-error" role="alert">{error}</div>}
+    {loading && !categories.length && <div aria-label={t('loading')}><div className="skeleton skeleton-row" /><div className="skeleton skeleton-row" /></div>}
+    <ul className="category-list" aria-busy={loading}>
       {categories.map(category => <li key={category.id}>
         {editingId === category.id ? <form className="category-edit" onSubmit={updateCategory}>
           <input aria-label={t('categoryName')} value={editName} onChange={event => setEditName(event.target.value)} maxLength={255} required />
