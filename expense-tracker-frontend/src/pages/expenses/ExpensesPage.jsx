@@ -3,6 +3,7 @@ import Navbar from '../../components/ui/Navbar'
 import { useFetch } from '../../hooks/useFetch'
 import { useI18n } from '../../i18n/I18nContext'
 import ExpenseModal from './ExpenseModal'
+import CategoryManager from './CategoryManager'
 import api from '../../api/axios'
 
 export default function ExpensesPage() {
@@ -14,7 +15,7 @@ export default function ExpensesPage() {
   const [closing, setClosing] = useState(false)
   const [toast, setToast] = useState(null)
   const { t, monthName, categoryName, currency, date } = useI18n()
-  const { data: categories } = useFetch('/categories')
+  const { data: categories, refetch: refetchCategories } = useFetch('/categories')
   const expensesUrl = useMemo(() => {
     const params = new URLSearchParams()
     if (categoryId) params.append('category_id', categoryId)
@@ -38,6 +39,12 @@ export default function ExpensesPage() {
     try { await api.delete(`/expenses/${id}`); setToast({ message: t('deleted') }); refetch() }
     catch { setToast({ message: t('deleteError'), error: true }) }
   }
+  function handleCategoryChanged(deletedId) {
+    if (String(deletedId) === categoryId) setCategoryId('')
+    refetchCategories()
+    refetch()
+  }
+  function handleCategoryFeedback(key, error = false) { setToast({ message: t(key), error }) }
   const handleModalClose = useCallback(() => {
     setClosing(true)
     window.setTimeout(() => { setModalOpen(false); setClosing(false); setEditingExpense(null) }, 180)
@@ -52,6 +59,7 @@ export default function ExpensesPage() {
       <div className="form-group"><label htmlFor="filter-year">{t('year')}</label><select id="filter-year" value={year} onChange={event => setYear(event.target.value)}><option value="">{t('allYears')}</option>{years.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
       {hasFilters && <button className="btn btn-ghost btn-sm" onClick={() => { setCategoryId(''); setMonth(''); setYear('') }}>{t('clearFilters')}</button>}
     </div></div>
+    <CategoryManager categories={categories ?? []} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
     {error && <div className="alert alert-error" role="alert">{error}</div>}
     {loading && !expenses && <div className="table-wrap skeleton-table" aria-label={t('loading')}>{Array.from({ length: 5 }, (_, index) => <div key={index} className="skeleton skeleton-row" />)}</div>}
     {expenses && <div className="expenses-content" aria-busy={loading}>{expenses.length === 0 ? <div className="empty-state"><span className="empty-state-icon" aria-hidden="true">○</span><p>{t('noExpenses')}</p></div> : <div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('description')}</th><th>{t('category')}</th><th className="text-right">{t('amount')}</th><th className="text-right">{t('actions')}</th></tr></thead><tbody>{expenses.map(expense => <tr key={expense.id}>

@@ -1,5 +1,6 @@
 export const translations = {
   'pt-BR': {
+    manageCategories: 'Gerenciar categorias', categoryHelp: 'Personalize nomes e cores. Categorias com despesas vinculadas não podem ser excluídas.', categoryName: 'Nome da categoria', categoryColor: 'Cor da categoria', newCategory: 'Nova categoria', addCategory: 'Adicionar categoria', deleteCategoryConfirm: 'Excluir a categoria {name}?', categoryCreated: 'Categoria adicionada.', categoryUpdated: 'Categoria atualizada.', categoryDeleted: 'Categoria excluída.', categoryInUse: 'Esta categoria tem despesas vinculadas. Edite-a ou mova as despesas antes de excluí-la.', categorySaveError: 'Não foi possível salvar a categoria.', categoryDeleteError: 'Não foi possível excluir a categoria.',
     dashboard: 'Visão geral', expenses: 'Despesas', logout: 'Sair', lightMode: 'Ativar modo claro', darkMode: 'Ativar modo escuro', language: 'Idioma',
     welcome: 'Bem-vindo de volta', welcomeSubtitle: 'Entre na sua conta para continuar', email: 'E-mail', password: 'Senha', signIn: 'Entrar', signingIn: 'Entrando...', noAccount: 'Não tem conta?', signUp: 'Cadastre-se',
     createAccount: 'Criar conta', createSubtitle: 'Comece a cuidar das suas finanças hoje', name: 'Nome', yourName: 'Seu nome', minPassword: 'Mínimo 8 caracteres', confirmPassword: 'Confirmar senha', repeatPassword: 'Repita a senha', creatingAccount: 'Criando conta...', haveAccount: 'Já tem conta?',
@@ -10,6 +11,7 @@ export const translations = {
     catFood: 'Alimentação', catTransport: 'Transporte', catHousing: 'Moradia', catHealth: 'Saúde', catLeisure: 'Lazer', catOther: 'Outros',
   },
   en: {
+    manageCategories: 'Manage categories', categoryHelp: 'Customize names and colors. Categories linked to expenses cannot be deleted.', categoryName: 'Category name', categoryColor: 'Category color', newCategory: 'New category', addCategory: 'Add category', deleteCategoryConfirm: 'Delete the {name} category?', categoryCreated: 'Category added.', categoryUpdated: 'Category updated.', categoryDeleted: 'Category deleted.', categoryInUse: 'This category is linked to expenses. Edit it or move the expenses before deleting it.', categorySaveError: 'Could not save the category.', categoryDeleteError: 'Could not delete the category.',
     dashboard: 'Overview', expenses: 'Expenses', logout: 'Log out', lightMode: 'Switch to light mode', darkMode: 'Switch to dark mode', language: 'Language',
     welcome: 'Welcome back', welcomeSubtitle: 'Sign in to continue', email: 'Email', password: 'Password', signIn: 'Sign in', signingIn: 'Signing in...', noAccount: 'New here?', signUp: 'Create an account',
     createAccount: 'Create an account', createSubtitle: 'Start taking care of your finances today', name: 'Name', yourName: 'Your name', minPassword: 'At least 8 characters', confirmPassword: 'Confirm password', repeatPassword: 'Repeat your password', creatingAccount: 'Creating account...', haveAccount: 'Already have an account?',
