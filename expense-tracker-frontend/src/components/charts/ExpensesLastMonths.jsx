@@ -11,7 +11,7 @@ import {
 export default function ExpensesLastMonths({ data }) {
   if (!data || data.length === 0) {
     return (
-      <p style={{ color: '#9ca3af', fontSize: '0.875rem', textAlign: 'center', paddingTop: '2rem' }}>
+      <p className="chart-empty">
         Nenhum dado disponível.
       </p>
     )
@@ -27,15 +27,9 @@ export default function ExpensesLastMonths({ data }) {
   function CustomTooltip({ active, payload, label }) {
     if (!active || !payload?.length) return null
     return (
-      <div style={{
-        background: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: 8,
-        padding: '0.5rem 0.875rem',
-        fontSize: '0.85rem',
-      }}>
+      <div className="chart-tooltip">
         <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{label}</p>
-        <p style={{ color: '#6366f1' }}>{formatCurrency(payload[0].value)}</p>
+        <p style={{ color: 'var(--accent)' }}>{formatCurrency(payload[0].value)}</p>
       </div>
     )
   }
@@ -43,22 +37,22 @@ export default function ExpensesLastMonths({ data }) {
   return (
     <ResponsiveContainer width="100%" height={280}>
       <BarChart data={data} margin={{ top: 4, right: 8, left: 8, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
         <XAxis
           dataKey="label"
-          tick={{ fontSize: 12, fill: '#9ca3af' }}
+          tick={{ fontSize: 12, fill: 'var(--text-3)' }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
-          tick={{ fontSize: 12, fill: '#9ca3af' }}
+          tick={{ fontSize: 12, fill: 'var(--text-3)' }}
           axisLine={false}
           tickLine={false}
           tickFormatter={(v) => `R$${v}`}
           width={56}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f3f4f6' }} />
-        <Bar dataKey="total" fill="#6366f1" radius={[6, 6, 0, 0]} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--surface-3)' }} />
+        <Bar dataKey="total" fill="var(--brand)" radius={[6, 6, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   )

@@ -1,8 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { useTheme } from '../../contexts/ThemeContext'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const navigate         = useNavigate()
 
   async function handleLogout() {
@@ -21,10 +23,9 @@ export default function Navbar() {
           <div className="navbar-links">
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/expenses">Despesas</Link>
-            <span style={{ color: '#d1d5db' }}>|</span>
-            <span style={{ fontSize: '0.875rem', color: '#374151' }}>
-              {user?.name}
-            </span>
+            <span className="navbar-divider" aria-hidden="true" />
+            <span className="navbar-user">{user?.name}</span>
+            <button type="button" className="icon-button" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'} title={theme === 'dark' ? 'Modo claro' : 'Modo escuro'}>{theme === 'dark' ? '☀' : '☾'}</button>
             <button
               onClick={handleLogout}
               className="btn btn-secondary btn-sm"

@@ -39,7 +39,7 @@ export default function DashboardPage() {
 
         {/* Header */}
         <div className="page-header">
-          <h2>Dashboard</h2>
+          <div><p className="page-kicker">Visão geral</p><h2>Dashboard</h2></div>
 
           {/* Filtro de mês/ano */}
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>

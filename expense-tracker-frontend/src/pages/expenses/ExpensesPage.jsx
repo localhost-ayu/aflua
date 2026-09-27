@@ -74,7 +74,7 @@ export default function ExpensesPage() {
       <div className="container">
 
         <div className="page-header">
-          <h2>Despesas</h2>
+          <div><p className="page-kicker">Seus registros</p><h2>Despesas</h2></div>
           <button
             className="btn btn-primary"
             style={{ width: 'auto' }}
@@ -170,7 +170,7 @@ export default function ExpensesPage() {
                         {formatCurrency(expense.amount)}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: '0.375rem', justifyContent: 'flex-end' }}>
+                        <div className="row-actions">
                           <button
                             className="btn btn-secondary btn-sm"
                             onClick={() => handleEdit(expense)}

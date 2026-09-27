@@ -10,7 +10,7 @@ import {
 export default function ExpensesByCategory({ data }) {
   if (!data || data.length === 0) {
     return (
-      <p style={{ color: '#9ca3af', fontSize: '0.875rem', textAlign: 'center', paddingTop: '2rem' }}>
+      <p className="chart-empty">
         Nenhuma despesa este mês.
       </p>
     )
@@ -29,13 +29,7 @@ export default function ExpensesByCategory({ data }) {
     if (!active || !payload?.length) return null
     const item = payload[0]
     return (
-      <div style={{
-        background: '#fff',
-        border: '1px solid #e5e7eb',
-        borderRadius: 8,
-        padding: '0.5rem 0.875rem',
-        fontSize: '0.85rem',
-      }}>
+      <div className="chart-tooltip">
         <p style={{ fontWeight: 600 }}>{item.name}</p>
         <p style={{ color: item.payload.color }}>{formatCurrency(item.value)}</p>
       </div>
@@ -62,7 +56,7 @@ export default function ExpensesByCategory({ data }) {
         <Tooltip content={<CustomTooltip />} />
         <Legend
           formatter={(value) => (
-            <span style={{ fontSize: '0.8rem', color: '#374151' }}>{value}</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-2)' }}>{value}</span>
           )}
         />
       </PieChart>

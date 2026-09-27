@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useFormErrors } from '../hooks/useFormErrors'
+import { useTheme } from '../contexts/ThemeContext'
 
 export default function RegisterPage() {
   const [name, setName]                         = useState('')
@@ -13,6 +14,7 @@ export default function RegisterPage() {
   const { register }                             = useAuth()
   const { errors, globalError, handleApiError }  = useFormErrors()
   const navigate                                 = useNavigate()
+  const { theme, toggleTheme } = useTheme()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -30,7 +32,7 @@ export default function RegisterPage() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <div className="auth-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></div>
+        <div className="auth-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></div><button type="button" className="icon-button auth-theme" onClick={toggleTheme} aria-label={theme === 'dark' ? 'Ativar modo claro' : 'Ativar modo escuro'}>{theme === 'dark' ? '☀' : '☾'}</button>
         <h1>Criar conta</h1>
         <p>Comece a controlar seus gastos hoje</p>
 
@@ -99,9 +101,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <p className="text-center mt-2" style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+        <p className="auth-footer">
           Já tem conta?{' '}
-          <Link to="/login" style={{ color: '#6366f1', fontWeight: 500 }}>
+          <Link to="/login">
             Entrar
           </Link>
         </p>
