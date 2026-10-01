@@ -25,7 +25,6 @@ The visual system replaces the original violet, card-heavy UI with a warmer and 
 
 | Area | Light theme | Dark theme |
 | --- | --- | --- |
-| Sign in | <img src="./Screenshots/login_light.png" alt="Aflua sign-in screen in the light theme" width="420"> | <img src="./Screenshots/login_dark.png" alt="Aflua sign-in screen in the dark theme" width="420"> |
 | Dashboard | <img src="./Screenshots/dashboard_light.png" alt="Aflua dashboard and spending charts in the light theme" width="420"> | <img src="./Screenshots/dashboard_dark.png" alt="Aflua dashboard and spending charts in the dark theme" width="420"> |
 | Expenses | <img src="./Screenshots/expenses_light.png" alt="Aflua expense filters and list in the light theme" width="420"> | <img src="./Screenshots/expenses_dark.png" alt="Aflua expense filters and list in the dark theme" width="420"> |
 | Add expense | <img src="./Screenshots/addexpense_light.png" alt="Aflua new-expense modal in the light theme" width="420"> | <img src="./Screenshots/addexpense_dark.png" alt="Aflua new-expense modal in the dark theme" width="420"> |
