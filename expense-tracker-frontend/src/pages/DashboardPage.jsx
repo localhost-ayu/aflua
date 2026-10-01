@@ -21,9 +21,9 @@ export default function DashboardPage() {
     </div>
     {error && <div className="alert alert-error" role="alert">{error}</div>}
     {data && <div className="dashboard-content" aria-busy={loading}>
-      <div className="stat-card mb-3"><p className="card-title">{t('totalSpent', { period })}</p><p className="stat-value">{currency(data.total_this_month)}</p></div>
+      <div className="balance-grid mb-3"><div className="stat-card"><p className="card-title">{t('totalReceived', { period })}</p><p className="stat-value">{currency(data.total_income)}</p></div><div className="stat-card"><p className="card-title">{t('totalSpent', { period })}</p><p className="stat-value">{currency(data.total_this_month)}</p></div><div className={`stat-card balance-card ${data.net_balance < 0 ? 'is-negative' : ''}`}><p className="card-title">{t('netBalance', { period })}</p><p className="stat-value">{currency(data.net_balance)}</p></div></div>
       <div className="grid-2"><div className="card"><p className="card-title">{t('byCategory')}</p><ExpensesByCategory data={data.by_category} /></div><div className="card"><p className="card-title">{t('lastSixMonths')}</p><ExpensesLastMonths data={data.last_six_months} /></div></div>
     </div>}
-    {loading && !data && <div className="dashboard-skeleton" aria-label={t('loading')}><div className="skeleton skeleton-stat" /><div className="grid-2"><div className="skeleton skeleton-chart" /><div className="skeleton skeleton-chart" /></div></div>}
+    {loading && !data && <div className="dashboard-skeleton" aria-label={t('loading')}><div className="balance-grid mb-3"><div className="skeleton skeleton-stat" /><div className="skeleton skeleton-stat" /><div className="skeleton skeleton-stat" /></div><div className="grid-2"><div className="skeleton skeleton-chart" /><div className="skeleton skeleton-chart" /></div></div>}
   </main></>
 }

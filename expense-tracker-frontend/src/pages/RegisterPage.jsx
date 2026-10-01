@@ -27,7 +27,7 @@ export default function RegisterPage() {
   }
 
   return <div className="auth-wrapper"><div className="auth-card">
-    <div className="auth-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></div>
+    <div className="auth-brand"><span className="brand-mark" aria-hidden="true">a</span><span className="brand-word">aflua</span></div>
     <div className="auth-tools"><LanguageSelect /><button type="button" className="icon-button" onClick={toggleTheme} aria-label={t(theme === 'dark' ? 'lightMode' : 'darkMode')}>{theme === 'dark' ? '☀' : '☾'}</button></div>
     <h1>{t('createAccount')}</h1><p>{t('createSubtitle')}</p>
     {globalError && <div className="alert alert-error" role="alert">{globalError}</div>}
