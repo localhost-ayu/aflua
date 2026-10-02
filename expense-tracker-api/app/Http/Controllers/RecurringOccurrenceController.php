@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 
 class RecurringOccurrenceController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, RecurringOccurrenceService $service): JsonResponse
     {
         $period = $this->period($request);
 
@@ -22,7 +22,12 @@ class RecurringOccurrenceController extends Controller
                 ->orWhereHas('rule', fn ($rules) => $rules->where('active', true)))
             ->with(['rule.category', 'expense', 'income'])
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->filter(fn ($occurrence) => $occurrence->status !== 'pending'
+                || ! $occurrence->rule->ends_on
+                || $service->effectiveDate($occurrence->rule, $occurrence->year, $occurrence->month)
+                    ->lessThanOrEqualTo($occurrence->rule->ends_on))
+            ->values();
 
         return response()->json($occurrences);
     }
@@ -32,7 +37,7 @@ class RecurringOccurrenceController extends Controller
         $period = $this->period($request);
         $service->prepareForUser($request->user(), $period['year'], $period['month']);
 
-        return $this->index($request);
+        return $this->index($request, $service);
     }
 
     public function confirm(Request $request, RecurringOccurrence $occurrence, RecurringOccurrenceService $service): JsonResponse

@@ -53,7 +53,9 @@ class RecurringOccurrenceService
 
             $rule = $locked->rule;
             abort_unless($rule->active, 409, 'rule_inactive');
-            $date = $this->effectiveDate($rule, $locked->year, $locked->month)->toDateString();
+            $effectiveDate = $this->effectiveDate($rule, $locked->year, $locked->month);
+            abort_if($rule->ends_on && $effectiveDate->greaterThan($rule->ends_on), 409, 'rule_expired');
+            $date = $effectiveDate->toDateString();
             $entryAmount = $amount ?? $rule->amount;
 
             if ($rule->type === 'expense') {
