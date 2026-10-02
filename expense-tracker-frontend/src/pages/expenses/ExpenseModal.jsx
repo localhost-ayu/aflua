@@ -15,6 +15,9 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
     const today = new Date()
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   })
+  const [repeatsMonthly, setRepeatsMonthly] = useState(false)
+  const [repeatDay, setRepeatDay] = useState(() => Number((entry?.expense_date ?? entry?.received_at)?.substring(8, 10) ?? new Date().getDate()))
+  const [autoConfirm, setAutoConfirm] = useState(true)
   const [loading, setLoading] = useState(false)
   const dialogRef = useRef(null)
   const { data: categories, error: categoriesError } = useFetch('/categories')
@@ -52,10 +55,26 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
     }
     try {
       if (isEditing) await api.put(`/${resource}/${entry.id}`, payload)
+      else if (repeatsMonthly) await api.post('/recurring-rules', {
+        type,
+        description,
+        amount,
+        starts_on: entryDate,
+        day_of_month: Number(repeatDay),
+        auto_confirm: autoConfirm,
+        ...(isExpense ? { category_id: Number(categoryId) } : {}),
+      })
       else await api.post(`/${resource}`, payload)
-      onSuccess(type, isEditing ? 'updated' : 'created')
+      onSuccess(type, isEditing ? 'updated' : repeatsMonthly ? 'recurringCreated' : 'created')
     } catch (error) { handleApiError(error) }
     finally { setLoading(false) }
+  }
+
+  function handleDateChange(value) {
+    if (Number(repeatDay) === Number(entryDate.substring(8, 10))) {
+      setRepeatDay(Number(value.substring(8, 10)))
+    }
+    setEntryDate(value)
   }
 
   return <div className={`modal-overlay ${closing ? 'is-closing' : ''}`} onMouseDown={event => { if (event.target === event.currentTarget) onClose() }}><div ref={dialogRef} className="modal-card" role="dialog" aria-modal="true" aria-labelledby="expense-modal-title">
@@ -65,7 +84,8 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
     <form onSubmit={handleSubmit}>
       {type === 'expense' && <div className="form-group"><label htmlFor="entry-category">{t('category')}</label><select id="entry-category" value={categoryId} onChange={event => setCategoryId(event.target.value)} required><option value="">{t('chooseCategory')}</option>{categories?.map(cat => <option key={cat.id} value={cat.id}>{categoryName(cat.name)}</option>)}</select>{categoriesError && <span className="error" role="alert">{categoriesError}</span>}{errors.category_id && <span className="error">{errors.category_id}</span>}</div>}
       <div className="form-group"><label htmlFor="entry-description">{t('description')}</label><input id="entry-description" type="text" value={description} onChange={event => setDescription(event.target.value)} placeholder={t(type === 'expense' ? 'descriptionExample' : 'incomeDescriptionExample')} required />{errors.description && <span className="error">{errors.description}</span>}</div>
-      <div className="modal-fields"><div className="form-group"><label htmlFor="entry-amount">{t('amountBrl')}</label><input id="entry-amount" type="number" step="0.01" min="0.01" value={amount} onChange={event => setAmount(event.target.value)} placeholder="0.00" required />{errors.amount && <span className="error">{errors.amount}</span>}</div><div className="form-group"><label htmlFor="entry-date">{t(type === 'expense' ? 'expenseDate' : 'receivedDate')}</label><input id="entry-date" type="date" value={entryDate} onChange={event => setEntryDate(event.target.value)} required />{(errors.expense_date || errors.received_at) && <span className="error">{errors.expense_date || errors.received_at}</span>}</div></div>
+      <div className="modal-fields"><div className="form-group"><label htmlFor="entry-amount">{t('amountBrl')}</label><input id="entry-amount" type="number" step="0.01" min="0.01" value={amount} onChange={event => setAmount(event.target.value)} placeholder="0.00" required />{errors.amount && <span className="error">{errors.amount}</span>}</div><div className="form-group"><label htmlFor="entry-date">{t(type === 'expense' ? 'expenseDate' : 'receivedDate')}</label><input id="entry-date" type="date" value={entryDate} onChange={event => handleDateChange(event.target.value)} required />{(errors.expense_date || errors.received_at) && <span className="error">{errors.expense_date || errors.received_at}</span>}</div></div>
+      {!isEditing && <div className="repeat-options"><label className="check-row"><input type="checkbox" checked={repeatsMonthly} onChange={event => setRepeatsMonthly(event.target.checked)} />{t('repeatsMonthly')}</label>{repeatsMonthly && <div className="repeat-details"><p className="page-subtitle">{t('firstOccurrenceHelp')}</p><div className="form-group"><label htmlFor="repeat-day">{t('dayOfMonth')}</label><input id="repeat-day" type="number" min="1" max="31" value={repeatDay} onChange={event => setRepeatDay(event.target.value)} required />{errors.day_of_month && <span className="error">{errors.day_of_month}</span>}</div><label className="check-row"><input type="checkbox" checked={autoConfirm} onChange={event => setAutoConfirm(event.target.checked)} />{t('autoConfirm')}</label></div>}</div>}
       <div className="modal-actions"><button type="button" className="btn btn-secondary" onClick={onClose}>{t('cancel')}</button><button type="submit" className="btn btn-primary" disabled={loading}>{loading ? t('saving') : t(isEditing ? 'saveChanges' : type === 'expense' ? 'add' : 'addIncome')}</button></div>
     </form>
   </div></div>

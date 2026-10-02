@@ -4,6 +4,7 @@ import { useFetch } from '../../hooks/useFetch'
 import { useI18n } from '../../i18n/I18nContext'
 import ExpenseModal from './ExpenseModal'
 import CategoryManager from './CategoryManager'
+import RecurringPanel from './RecurringPanel'
 import api from '../../api/axios'
 
 export default function ExpensesPage() {
@@ -16,6 +17,7 @@ export default function ExpensesPage() {
   const [modalType, setModalType] = useState('expense')
   const [closing, setClosing] = useState(false)
   const [toast, setToast] = useState(null)
+  const [recurringRefresh, setRecurringRefresh] = useState(0)
   const { t, monthName, categoryName, currency, date } = useI18n()
   const { data: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useFetch('/categories')
   const expensesUrl = useMemo(() => {
@@ -38,7 +40,8 @@ export default function ExpensesPage() {
     ...(typeFilter === 'expense' || categoryId ? [] : (incomes ?? []).map(entry => ({ ...entry, entryType: 'income', entryDate: entry.received_at }))),
   ].sort((a, b) => b.entryDate.localeCompare(a.entryDate) || b.id - a.id), [expenses, incomes, typeFilter, categoryId])
   const currentYear = new Date().getFullYear()
-  const years = [currentYear, currentYear - 1, currentYear - 2]
+  const currentMonth = new Date().getMonth() + 1
+  const years = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2]
   const hasFilters = typeFilter !== 'all' || categoryId || month || year
   const loading = expensesLoading || incomesLoading
 
@@ -55,7 +58,7 @@ export default function ExpensesPage() {
       setToast({ message: t(entry.entryType === 'expense' ? 'deleted' : 'incomeDeleted') })
       if (entry.entryType === 'expense') refetchExpenses()
       else refetchIncomes()
-    } catch { setToast({ message: t(entry.entryType === 'expense' ? 'deleteError' : 'incomeDeleteError'), error: true }) }
+    } catch (error) { setToast({ message: t(error.response?.status === 409 ? 'recurringEntryInUse' : entry.entryType === 'expense' ? 'deleteError' : 'incomeDeleteError'), error: true }) }
   }
   function handleCategoryChanged(deletedId) {
     if (String(deletedId) === categoryId) setCategoryId('')
@@ -84,10 +87,11 @@ export default function ExpensesPage() {
       {hasFilters && <button className="btn btn-ghost btn-sm" onClick={() => { setTypeFilter('all'); setCategoryId(''); setMonth(''); setYear('') }}>{t('clearFilters')}</button>}
     </div></div>
     <CategoryManager categories={categories ?? []} loading={categoriesLoading} error={categoriesError} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
+    <RecurringPanel month={Number(month) || currentMonth} year={Number(year) || currentYear} refreshToken={recurringRefresh} onChanged={() => { refetchExpenses(); refetchIncomes() }} onFeedback={handleCategoryFeedback} />
     {(expensesError || incomesError) && <div className="alert alert-error" role="alert">{expensesError || incomesError}</div>}
     {loading && (!expenses || !incomes) && <div className="table-wrap skeleton-table" aria-label={t('loading')}>{Array.from({ length: 5 }, (_, index) => <div key={index} className="skeleton skeleton-row" />)}</div>}
     {expenses && incomes && <div className="expenses-content" aria-busy={loading}>{entries.length === 0 ? <div className="empty-state"><span className="empty-state-icon" aria-hidden="true">○</span><p>{t('noEntries')}</p></div> : <div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('description')}</th><th>{t('entryType')}</th><th>{t('category')}</th><th className="text-right">{t('amount')}</th><th className="text-right">{t('actions')}</th></tr></thead><tbody>{entries.map(entry => <tr key={`${entry.entryType}-${entry.id}`}>
       <td className="text-muted">{date(entry.entryDate)}</td><td className="font-bold">{entry.description}</td><td><span className={`entry-kind ${entry.entryType}`}>{t(entry.entryType === 'expense' ? 'expenseType' : 'incomeType')}</span></td><td>{entry.entryType === 'expense' ? <span className="category-badge"><span className="category-dot" style={{ background: entry.category?.color }} />{categoryName(entry.category?.name || '')}</span> : <span className="text-muted">—</span>}</td><td className={`text-right font-bold ${entry.entryType === 'income' ? 'income-amount' : ''}`}>{entry.entryType === 'income' ? '+' : '−'}{currency(entry.amount)}</td><td><div className="row-actions"><button className="btn btn-secondary btn-sm" onClick={() => openModal(entry)}>{t('edit')}</button><button className="btn btn-danger btn-sm" onClick={() => handleDelete(entry)}>{t('delete')}</button></div></td>
     </tr>)}</tbody></table></div>}</div>}
-  </main>{modalOpen && <ExpenseModal entry={editingEntry} entryType={modalType} closing={closing} onClose={handleModalClose} onSuccess={(type, result) => { handleModalClose(); setToast({ message: t(type === 'expense' ? result : result === 'created' ? 'incomeCreated' : 'incomeUpdated') }); if (type === 'expense') refetchExpenses(); else refetchIncomes() }} />}{toast && <div className={`toast ${toast.error ? 'error' : ''}`} role="status">{toast.message}<button type="button" onClick={() => setToast(null)} aria-label={t('cancel')}>×</button></div>}</>
+  </main>{modalOpen && <ExpenseModal entry={editingEntry} entryType={modalType} closing={closing} onClose={handleModalClose} onSuccess={(type, result) => { handleModalClose(); setToast({ message: t(result === 'recurringCreated' ? result : type === 'expense' ? result : result === 'created' ? 'incomeCreated' : 'incomeUpdated') }); if (type === 'expense') refetchExpenses(); else refetchIncomes(); setRecurringRefresh(value => value + 1) }} />}{toast && <div className={`toast ${toast.error ? 'error' : ''}`} role="status">{toast.message}<button type="button" onClick={() => setToast(null)} aria-label={t('cancel')}>×</button></div>}</>
 }
