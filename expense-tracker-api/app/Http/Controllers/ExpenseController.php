@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
-use App\Models\RecurringOccurrence;
+use App\Services\EntryRecurrenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,7 +14,7 @@ class ExpenseController extends Controller
     {
         $query = $request->user()
                          ->expenses()
-                         ->with('category'); // eager loading — evita N+1
+                         ->with('category', 'recurringOccurrence.rule'); // eager loading — evita N+1
 
         // Filtro por categoria
         if ($request->filled('category_id')) {
@@ -69,7 +69,7 @@ class ExpenseController extends Controller
         return response()->json($expense);
     }
 
-    public function update(Request $request, Expense $expense): JsonResponse
+    public function update(Request $request, Expense $expense, EntryRecurrenceService $recurrences): JsonResponse
     {
         if ($request->user()->id !== $expense->user_id) {
             return response()->json(['message' => 'Não autorizado.'], 403);
@@ -77,28 +77,30 @@ class ExpenseController extends Controller
 
         $validated = $request->validate([
             'category_id'  => ['sometimes', Rule::exists('categories', 'id')->where('user_id', $request->user()->id)],
-            'amount'       => 'sometimes|numeric|min:0.01',
+            'amount'       => 'sometimes|numeric|min:0.01|max:99999999.99|decimal:0,2',
             'description'  => 'sometimes|string|max:255',
             'expense_date' => 'sometimes|date',
+            'recurrence' => ['sometimes', 'array'],
+            'recurrence.enabled' => ['required_with:recurrence', 'boolean'],
+            'recurrence.day_of_month' => ['required_if:recurrence.enabled,true', 'integer', 'between:1,31'],
+            'recurrence.auto_confirm' => ['sometimes', 'boolean'],
         ]);
 
-        $expense->update($validated);
+        $recurrence = $validated['recurrence'] ?? null;
+        unset($validated['recurrence']);
+        $recurrences->update($expense, $validated, $recurrence);
         $expense->load('category');
 
         return response()->json($expense);
     }
 
-    public function destroy(Request $request, Expense $expense): JsonResponse
+    public function destroy(Request $request, Expense $expense, EntryRecurrenceService $recurrences): JsonResponse
     {
         if ($request->user()->id !== $expense->user_id) {
             return response()->json(['message' => 'Não autorizado.'], 403);
         }
 
-        if (RecurringOccurrence::where('linked_expense_id', $expense->id)->exists()) {
-            return response()->json(['message' => 'recurring_entry_in_use'], 409);
-        }
-
-        $expense->delete();
+        $recurrences->delete($expense);
 
         return response()->json(null, 204);
     }
