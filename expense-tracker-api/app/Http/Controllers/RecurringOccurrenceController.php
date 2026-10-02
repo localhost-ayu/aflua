@@ -18,8 +18,6 @@ class RecurringOccurrenceController extends Controller
             ->whereHas('rule', fn ($query) => $query->where('user_id', $request->user()->id))
             ->where('year', $period['year'])
             ->where('month', $period['month'])
-            ->where(fn ($query) => $query->where('status', '!=', 'pending')
-                ->orWhereHas('rule', fn ($rules) => $rules->where('active', true)))
             ->with(['rule.category', 'expense', 'income'])
             ->orderBy('id')
             ->get()
@@ -71,7 +69,14 @@ class RecurringOccurrenceController extends Controller
     {
         $this->authorizeOccurrence($occurrence);
 
-        return response()->json($service->undoAutomatic($occurrence));
+        return response()->json($service->undoConfirmation($occurrence));
+    }
+
+    public function reopen(RecurringOccurrence $occurrence, RecurringOccurrenceService $service): JsonResponse
+    {
+        $this->authorizeOccurrence($occurrence);
+
+        return response()->json($service->reopen($occurrence));
     }
 
     private function authorizeOccurrence(RecurringOccurrence $occurrence): void

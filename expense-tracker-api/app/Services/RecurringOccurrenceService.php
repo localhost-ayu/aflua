@@ -107,11 +107,22 @@ class RecurringOccurrenceService
         });
     }
 
-    public function undoAutomatic(RecurringOccurrence $occurrence): RecurringOccurrence
+    public function reopen(RecurringOccurrence $occurrence): RecurringOccurrence
     {
         return DB::transaction(function () use ($occurrence) {
             $locked = RecurringOccurrence::query()->lockForUpdate()->findOrFail($occurrence->id);
-            abort_unless($locked->status === 'confirmed' && $locked->auto_confirmed_at, 409, 'not_auto_confirmed');
+            abort_unless($locked->status === 'skipped', 409, 'occurrence_not_skipped');
+            $locked->update(['status' => 'pending', 'auto_confirm_suppressed' => true]);
+
+            return $locked->load('rule.category');
+        });
+    }
+
+    public function undoConfirmation(RecurringOccurrence $occurrence): RecurringOccurrence
+    {
+        return DB::transaction(function () use ($occurrence) {
+            $locked = RecurringOccurrence::query()->lockForUpdate()->findOrFail($occurrence->id);
+            abort_unless($locked->status === 'confirmed', 409, 'occurrence_not_confirmed');
             $entry = $locked->rule->type === 'expense' ? $locked->expense : $locked->income;
             abort_unless($entry, 409, 'linked_entry_missing');
 

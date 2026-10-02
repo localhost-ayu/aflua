@@ -100,7 +100,8 @@ class ExpenseController extends Controller
             return response()->json(['message' => 'Não autorizado.'], 403);
         }
 
-        $recurrences->delete($expense);
+        $data = $request->validate(['occurrence_action' => ['sometimes', Rule::in(['pending', 'skipped'])]]);
+        $recurrences->delete($expense, $data['occurrence_action'] ?? 'skipped');
 
         return response()->json(null, 204);
     }

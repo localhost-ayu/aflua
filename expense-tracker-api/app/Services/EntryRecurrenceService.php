@@ -41,13 +41,13 @@ class EntryRecurrenceService
         });
     }
 
-    public function delete(Expense|Income $entry): void
+    public function delete(Expense|Income $entry, string $occurrenceAction = 'skipped'): void
     {
-        DB::transaction(function () use ($entry) {
+        DB::transaction(function () use ($entry, $occurrenceAction) {
             $occurrence = $entry->recurringOccurrence()->lockForUpdate()->first();
 
             if ($occurrence) {
-                $this->detach($occurrence);
+                $this->detach($occurrence, $occurrenceAction);
             }
 
             $entry->delete();
@@ -85,10 +85,10 @@ class EntryRecurrenceService
         ]);
     }
 
-    private function detach(RecurringOccurrence $occurrence): void
+    private function detach(RecurringOccurrence $occurrence, string $status = 'skipped'): void
     {
         $occurrence->update([
-            'status' => 'skipped',
+            'status' => $status,
             'linked_expense_id' => null,
             'linked_income_id' => null,
             'auto_confirmed_at' => null,

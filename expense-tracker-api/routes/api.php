@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/recurring-rules', [RecurringRuleController::class, 'index']);
     Route::post('/recurring-rules', [RecurringRuleController::class, 'store']);
     Route::patch('/recurring-rules/{recurringRule}', [RecurringRuleController::class, 'update']);
+    Route::delete('/recurring-rules/{recurringRule}', [RecurringRuleController::class, 'destroy']);
 
     Route::get('/recurring-occurrences', [RecurringOccurrenceController::class, 'index']);
     Route::post('/recurring-occurrences/prepare', [RecurringOccurrenceController::class, 'prepare']);
@@ -34,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/recurring-occurrences/{occurrence}/skip', [RecurringOccurrenceController::class, 'skip']);
     Route::patch('/recurring-occurrences/{occurrence}/amount', [RecurringOccurrenceController::class, 'adjust']);
     Route::post('/recurring-occurrences/{occurrence}/undo', [RecurringOccurrenceController::class, 'undo']);
+    Route::post('/recurring-occurrences/{occurrence}/reopen', [RecurringOccurrenceController::class, 'reopen']);
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });

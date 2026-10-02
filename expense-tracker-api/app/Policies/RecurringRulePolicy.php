@@ -16,4 +16,9 @@ class RecurringRulePolicy
     {
         return $user->id === $rule->user_id;
     }
+
+    public function delete(User $user, RecurringRule $rule): bool
+    {
+        return $user->id === $rule->user_id;
+    }
 }

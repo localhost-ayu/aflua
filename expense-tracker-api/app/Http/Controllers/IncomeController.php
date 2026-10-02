@@ -7,6 +7,7 @@ use App\Services\EntryRecurrenceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\Rule;
 
 class IncomeController extends Controller
 {
@@ -61,10 +62,11 @@ class IncomeController extends Controller
         return response()->json($income);
     }
 
-    public function destroy(Income $income, EntryRecurrenceService $recurrences): JsonResponse
+    public function destroy(Request $request, Income $income, EntryRecurrenceService $recurrences): JsonResponse
     {
         Gate::authorize('delete', $income);
-        $recurrences->delete($income);
+        $data = $request->validate(['occurrence_action' => ['sometimes', Rule::in(['pending', 'skipped'])]]);
+        $recurrences->delete($income, $data['occurrence_action'] ?? 'skipped');
 
         return response()->json(null, 204);
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecurringRule;
+use App\Services\RecurringRuleDeletionService;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,12 @@ class RecurringRuleController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        return response()->json($request->user()->recurringRules()->with('category')->latest('id')->get());
+        return response()->json($request->user()->recurringRules()
+            ->with('category')
+            ->withCount(['occurrences as linked_entries_count' => fn ($query) => $query
+                ->where('status', 'confirmed')
+                ->where(fn ($linked) => $linked->whereNotNull('linked_expense_id')->orWhereNotNull('linked_income_id'))])
+            ->latest('id')->get());
     }
 
     public function store(Request $request): JsonResponse
@@ -57,6 +63,18 @@ class RecurringRuleController extends Controller
         $recurringRule->update($data);
 
         return response()->json($recurringRule->load('category'));
+    }
+
+    public function destroy(Request $request, RecurringRule $recurringRule, RecurringRuleDeletionService $deletion): JsonResponse
+    {
+        Gate::authorize('delete', $recurringRule);
+        $data = $request->validate([
+            'mode' => ['required', Rule::in(['keep_entries', 'delete_entries'])],
+        ]);
+
+        $deletion->delete($recurringRule, $data['mode'] === 'delete_entries');
+
+        return response()->json(null, 204);
     }
 
     private function rules(Request $request, ?RecurringRule $rule = null): array
