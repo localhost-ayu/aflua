@@ -4,12 +4,12 @@ import { categoryKeys, translations } from './translations'
 const I18nContext = createContext(null)
 
 export function I18nProvider({ children }) {
-  const [locale, setLocale] = useState(() => localStorage.getItem('cifra-locale') === 'en' ? 'en' : 'pt-BR')
+  const [locale, setLocale] = useState(() => (localStorage.getItem('aflua-locale') ?? localStorage.getItem('cifra-locale')) === 'en' ? 'en' : 'pt-BR')
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = locale === 'en' ? 'cifra — your finances, clearly' : 'cifra — suas finanças, com clareza'
-    localStorage.setItem('cifra-locale', locale)
+    document.title = locale === 'en' ? 'aflua — clarity for your money' : 'aflua — clareza para o seu dinheiro'
+    localStorage.setItem('aflua-locale', locale)
   }, [locale])
 
   const t = useCallback((key, values = {}) => (translations[locale][key] || key).replace(/\{(\w+)\}/g, (_, name) => values[name] ?? ''), [locale])

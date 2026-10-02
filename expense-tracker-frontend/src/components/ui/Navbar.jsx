@@ -16,7 +16,7 @@ export default function Navbar() {
   }
 
   return <nav className="navbar"><div className="container"><div className="navbar-inner">
-    <Link to="/dashboard" className="navbar-brand"><span className="brand-mark" aria-hidden="true">c</span><span className="brand-word">cifra</span></Link>
+    <Link to="/dashboard" className="navbar-brand"><span className="brand-mark" aria-hidden="true">a</span><span className="brand-word">aflua</span></Link>
     <div className="navbar-links"><NavLink to="/dashboard">{t('dashboard')}</NavLink><NavLink to="/expenses">{t('expenses')}</NavLink></div>
     <div className="navbar-actions"><span className="navbar-user">{user?.name}</span><LanguageSelect /><button type="button" className="icon-button" onClick={toggleTheme} aria-label={t(theme === 'dark' ? 'lightMode' : 'darkMode')} title={t(theme === 'dark' ? 'lightMode' : 'darkMode')}>{theme === 'dark' ? '☀' : '☾'}</button><button onClick={handleLogout} className="btn btn-secondary btn-sm">{t('logout')}</button></div>
   </div></div></nav>
