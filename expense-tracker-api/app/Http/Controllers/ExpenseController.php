@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Expense;
+use App\Models\RecurringOccurrence;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -91,6 +92,10 @@ class ExpenseController extends Controller
     {
         if ($request->user()->id !== $expense->user_id) {
             return response()->json(['message' => 'Não autorizado.'], 403);
+        }
+
+        if (RecurringOccurrence::where('linked_expense_id', $expense->id)->exists()) {
+            return response()->json(['message' => 'recurring_entry_in_use'], 409);
         }
 
         $expense->delete();

@@ -64,7 +64,7 @@ class CategoryController extends Controller
     {
         Gate::authorize('delete', $category);
 
-        if ($category->expenses()->exists()) {
+        if ($category->expenses()->exists() || $category->recurringRules()->exists()) {
             return response()->json(['message' => 'category_in_use'], 409);
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Income;
+use App\Models\RecurringOccurrence;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -54,6 +55,10 @@ class IncomeController extends Controller
     public function destroy(Income $income): JsonResponse
     {
         Gate::authorize('delete', $income);
+        if (RecurringOccurrence::where('linked_income_id', $income->id)->exists()) {
+            return response()->json(['message' => 'recurring_entry_in_use'], 409);
+        }
+
         $income->delete();
 
         return response()->json(null, 204);

@@ -25,4 +25,9 @@ class Category extends Model
     {
         return $this->hasMany(Expense::class);
     }
+
+    public function recurringRules(): HasMany
+    {
+        return $this->hasMany(RecurringRule::class);
+    }
 }
