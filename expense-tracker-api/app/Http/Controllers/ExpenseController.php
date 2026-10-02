@@ -53,7 +53,7 @@ class ExpenseController extends Controller
         $expense = $request->user()->expenses()->create($validated);
 
         // Carrega a categoria para retornar o objeto completo
-        $expense->load('category');
+        $expense->load('category', 'recurringOccurrence.rule');
 
         return response()->json($expense, 201);
     }
@@ -64,7 +64,7 @@ class ExpenseController extends Controller
             return response()->json(['message' => 'Não autorizado.'], 403);
         }
 
-        $expense->load('category');
+        $expense->load('category', 'recurringOccurrence.rule');
 
         return response()->json($expense);
     }
@@ -89,7 +89,7 @@ class ExpenseController extends Controller
         $recurrence = $validated['recurrence'] ?? null;
         unset($validated['recurrence']);
         $recurrences->update($expense, $validated, $recurrence);
-        $expense->load('category');
+        $expense->load('category', 'recurringOccurrence.rule');
 
         return response()->json($expense);
     }

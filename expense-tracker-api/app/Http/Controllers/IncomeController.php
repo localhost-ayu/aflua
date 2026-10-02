@@ -41,7 +41,7 @@ class IncomeController extends Controller
     {
         Gate::authorize('view', $income);
 
-        return response()->json($income);
+        return response()->json($income->load('recurringOccurrence.rule'));
     }
 
     public function update(Request $request, Income $income, EntryRecurrenceService $recurrences): JsonResponse
