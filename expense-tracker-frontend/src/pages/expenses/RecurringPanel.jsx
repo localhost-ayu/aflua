@@ -85,8 +85,9 @@ export default function RecurringPanel({ month, year, refreshToken, onChanged, o
   }
 
   const actionable = (occurrences ?? []).filter(occurrence => occurrence.status === 'pending' || (occurrence.auto_confirmed_at && new Date(occurrence.auto_confirmed_at).getTime() >= recentCutoff))
+  const pendingCount = actionable.filter(occurrence => occurrence.status === 'pending').length
 
-  return <section className="card recurring-panel mb-3" aria-busy={loading}><div className="recurring-heading"><div><p className="page-kicker">{t('monthlyFlow')}</p><h3>{t('recurringFor', { period: `${monthName(month - 1)} ${year}` })}</h3></div>{actionable.some(occurrence => occurrence.status === 'pending') && <span className="pending-count">{t('pendingCount', { count: actionable.filter(occurrence => occurrence.status === 'pending').length })}</span>}</div>
+  return <section className="card recurring-panel mb-3" aria-busy={loading}><div className="recurring-heading"><div><p className="page-kicker">{t('monthlyFlow')}</p><h3>{t('recurringFor', { period: `${monthName(month - 1)} ${year}` })}</h3></div>{pendingCount > 0 && <span className="pending-count">{t(pendingCount === 1 ? 'pendingCountOne' : 'pendingCountMany', { count: pendingCount })}</span>}</div>
     {error && <div className="alert alert-error" role="alert">{error}</div>}
     {loading && !occurrences && <div aria-label={t('loading')}><div className="skeleton skeleton-row" /><div className="skeleton skeleton-row" /></div>}
     {occurrences && <>{actionable.length ? <ul className="recurring-list">{actionable.map(occurrence => <OccurrenceItem key={`${occurrence.id}-${occurrence.status}-${occurrence.rule.amount}-${occurrence.expense?.amount ?? occurrence.income?.amount ?? ''}`} occurrence={occurrence} busy={busy} onAction={handleAction} />)}</ul> : <p className="page-subtitle">{t('noPendingRecurrences')}</p>}</>}
