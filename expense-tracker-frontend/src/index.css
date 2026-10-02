@@ -202,6 +202,7 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .repeat-options { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: .25rem; }
 .repeat-details { padding: .8rem 0 0 1.55rem; animation: fade-in .18s ease both; }
 .repeat-details .page-subtitle { margin: 0 0 .8rem; }
+.repeat-disabling-help { margin: .55rem 0 0 1.55rem; }
 .repeat-details .form-group { max-width: 180px; }
 .entry-type-toggle { display: grid; grid-template-columns: 1fr 1fr; gap: .3rem; margin: 0 0 1.35rem; padding: .3rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface-2); }
 .entry-type-toggle legend { font-size: .77rem; font-weight: 700; color: var(--text-2); padding: 0 .2rem; }

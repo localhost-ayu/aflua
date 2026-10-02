@@ -15,9 +15,10 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
     const today = new Date()
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
   })
-  const [repeatsMonthly, setRepeatsMonthly] = useState(false)
-  const [repeatDay, setRepeatDay] = useState(() => Number((entry?.expense_date ?? entry?.received_at)?.substring(8, 10) ?? new Date().getDate()))
-  const [autoConfirm, setAutoConfirm] = useState(true)
+  const linkedRule = entry?.recurring_occurrence?.rule
+  const [repeatsMonthly, setRepeatsMonthly] = useState(Boolean(linkedRule?.active))
+  const [repeatDay, setRepeatDay] = useState(() => linkedRule?.day_of_month ?? Number((entry?.expense_date ?? entry?.received_at)?.substring(8, 10) ?? new Date().getDate()))
+  const [autoConfirm, setAutoConfirm] = useState(linkedRule?.auto_confirm ?? true)
   const [loading, setLoading] = useState(false)
   const dialogRef = useRef(null)
   const { data: categories, error: categoriesError } = useFetch('/categories')
@@ -54,7 +55,13 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
       ...(isExpense ? { category_id: Number(categoryId), expense_date: entryDate } : { received_at: entryDate }),
     }
     try {
-      if (isEditing) await api.put(`/${resource}/${entry.id}`, payload)
+      if (isEditing) await api.put(`/${resource}/${entry.id}`, {
+        ...payload,
+        recurrence: {
+          enabled: repeatsMonthly,
+          ...(repeatsMonthly ? { day_of_month: Number(repeatDay), auto_confirm: autoConfirm } : {}),
+        },
+      })
       else if (repeatsMonthly) await api.post('/recurring-rules', {
         type,
         description,
@@ -65,7 +72,9 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
         ...(isExpense ? { category_id: Number(categoryId) } : {}),
       })
       else await api.post(`/${resource}`, payload)
-      onSuccess(type, isEditing ? 'updated' : repeatsMonthly ? 'recurringCreated' : 'created')
+      onSuccess(type, isEditing
+        ? repeatsMonthly && !linkedRule?.active ? 'recurringEnabled' : !repeatsMonthly && linkedRule?.active ? 'recurringDisabled' : 'updated'
+        : repeatsMonthly ? 'recurringCreated' : 'created')
     } catch (error) { handleApiError(error) }
     finally { setLoading(false) }
   }
@@ -85,7 +94,7 @@ export default function ExpenseModal({ entry, entryType = 'expense', closing, on
       {type === 'expense' && <div className="form-group"><label htmlFor="entry-category">{t('category')}</label><select id="entry-category" value={categoryId} onChange={event => setCategoryId(event.target.value)} required><option value="">{t('chooseCategory')}</option>{categories?.map(cat => <option key={cat.id} value={cat.id}>{categoryName(cat.name)}</option>)}</select>{categoriesError && <span className="error" role="alert">{categoriesError}</span>}{errors.category_id && <span className="error">{errors.category_id}</span>}</div>}
       <div className="form-group"><label htmlFor="entry-description">{t('description')}</label><input id="entry-description" type="text" value={description} onChange={event => setDescription(event.target.value)} placeholder={t(type === 'expense' ? 'descriptionExample' : 'incomeDescriptionExample')} required />{errors.description && <span className="error">{errors.description}</span>}</div>
       <div className="modal-fields"><div className="form-group"><label htmlFor="entry-amount">{t('amountBrl')}</label><input id="entry-amount" type="number" step="0.01" min="0.01" value={amount} onChange={event => setAmount(event.target.value)} placeholder="0.00" required />{errors.amount && <span className="error">{errors.amount}</span>}</div><div className="form-group"><label htmlFor="entry-date">{t(type === 'expense' ? 'expenseDate' : 'receivedDate')}</label><input id="entry-date" type="date" value={entryDate} onChange={event => handleDateChange(event.target.value)} required />{(errors.expense_date || errors.received_at) && <span className="error">{errors.expense_date || errors.received_at}</span>}</div></div>
-      {!isEditing && <div className="repeat-options"><label className="check-row"><input type="checkbox" checked={repeatsMonthly} onChange={event => setRepeatsMonthly(event.target.checked)} />{t('repeatsMonthly')}</label>{repeatsMonthly && <div className="repeat-details"><p className="page-subtitle">{t('firstOccurrenceHelp')}</p><div className="form-group"><label htmlFor="repeat-day">{t('dayOfMonth')}</label><input id="repeat-day" type="number" min="1" max="31" value={repeatDay} onChange={event => setRepeatDay(event.target.value)} required />{errors.day_of_month && <span className="error">{errors.day_of_month}</span>}</div><label className="check-row"><input type="checkbox" checked={autoConfirm} onChange={event => setAutoConfirm(event.target.checked)} />{t('autoConfirm')}</label></div>}</div>}
+      <div className="repeat-options"><label className="check-row"><input type="checkbox" checked={repeatsMonthly} onChange={event => setRepeatsMonthly(event.target.checked)} />{t('repeatsMonthly')}</label>{repeatsMonthly ? <div className="repeat-details"><p className="page-subtitle">{t(!isEditing ? 'firstOccurrenceHelp' : linkedRule ? 'editRecurringHelp' : 'convertRecurringHelp')}</p><div className="form-group"><label htmlFor="repeat-day">{t('dayOfMonth')}</label><input id="repeat-day" type="number" min="1" max="31" value={repeatDay} onChange={event => setRepeatDay(event.target.value)} required />{errors['recurrence.day_of_month'] && <span className="error">{errors['recurrence.day_of_month']}</span>}{errors.day_of_month && <span className="error">{errors.day_of_month}</span>}</div><label className="check-row"><input type="checkbox" checked={autoConfirm} onChange={event => setAutoConfirm(event.target.checked)} />{t('autoConfirm')}</label></div> : isEditing && linkedRule?.active && <p className="page-subtitle repeat-disabling-help">{t('disableRecurringHelp')}</p>}</div>
       <div className="modal-actions"><button type="button" className="btn btn-secondary" onClick={onClose}>{t('cancel')}</button><button type="submit" className="btn btn-primary" disabled={loading}>{loading ? t('saving') : t(isEditing ? 'saveChanges' : type === 'expense' ? 'add' : 'addIncome')}</button></div>
     </form>
   </div></div>

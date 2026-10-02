@@ -52,12 +52,13 @@ export default function ExpensesPage() {
   }, [toast])
 
   async function handleDelete(entry) {
-    if (!window.confirm(t(entry.entryType === 'expense' ? 'deleteConfirm' : 'deleteIncomeConfirm'))) return
+    if (!window.confirm(t(entry.recurring_occurrence ? 'deleteRecurringEntryConfirm' : entry.entryType === 'expense' ? 'deleteConfirm' : 'deleteIncomeConfirm'))) return
     try {
       await api.delete(`/${entry.entryType === 'expense' ? 'expenses' : 'incomes'}/${entry.id}`)
       setToast({ message: t(entry.entryType === 'expense' ? 'deleted' : 'incomeDeleted') })
       if (entry.entryType === 'expense') refetchExpenses()
       else refetchIncomes()
+      setRecurringRefresh(value => value + 1)
     } catch (error) { setToast({ message: t(error.response?.status === 409 ? 'recurringEntryInUse' : entry.entryType === 'expense' ? 'deleteError' : 'incomeDeleteError'), error: true }) }
   }
   function handleCategoryChanged(deletedId) {
@@ -93,5 +94,5 @@ export default function ExpensesPage() {
     {expenses && incomes && <div className="expenses-content" aria-busy={loading}>{entries.length === 0 ? <div className="empty-state"><span className="empty-state-icon" aria-hidden="true">○</span><p>{t('noEntries')}</p></div> : <div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('description')}</th><th>{t('entryType')}</th><th>{t('category')}</th><th className="text-right">{t('amount')}</th><th className="text-right">{t('actions')}</th></tr></thead><tbody>{entries.map(entry => <tr key={`${entry.entryType}-${entry.id}`}>
       <td className="text-muted">{date(entry.entryDate)}</td><td className="font-bold">{entry.description}</td><td><span className={`entry-kind ${entry.entryType}`}>{t(entry.entryType === 'expense' ? 'expenseType' : 'incomeType')}</span></td><td>{entry.entryType === 'expense' ? <span className="category-badge"><span className="category-dot" style={{ background: entry.category?.color }} />{categoryName(entry.category?.name || '')}</span> : <span className="text-muted">—</span>}</td><td className={`text-right font-bold ${entry.entryType === 'income' ? 'income-amount' : ''}`}>{entry.entryType === 'income' ? '+' : '−'}{currency(entry.amount)}</td><td><div className="row-actions"><button className="btn btn-secondary btn-sm" onClick={() => openModal(entry)}>{t('edit')}</button><button className="btn btn-danger btn-sm" onClick={() => handleDelete(entry)}>{t('delete')}</button></div></td>
     </tr>)}</tbody></table></div>}</div>}
-  </main>{modalOpen && <ExpenseModal entry={editingEntry} entryType={modalType} closing={closing} onClose={handleModalClose} onSuccess={(type, result) => { handleModalClose(); setToast({ message: t(result === 'recurringCreated' ? result : type === 'expense' ? result : result === 'created' ? 'incomeCreated' : 'incomeUpdated') }); if (type === 'expense') refetchExpenses(); else refetchIncomes(); setRecurringRefresh(value => value + 1) }} />}{toast && <div className={`toast ${toast.error ? 'error' : ''}`} role="status">{toast.message}<button type="button" onClick={() => setToast(null)} aria-label={t('cancel')}>×</button></div>}</>
+  </main>{modalOpen && <ExpenseModal entry={editingEntry} entryType={modalType} closing={closing} onClose={handleModalClose} onSuccess={(type, result) => { handleModalClose(); setToast({ message: t(result.startsWith('recurring') ? result : type === 'expense' ? result : result === 'created' ? 'incomeCreated' : 'incomeUpdated') }); if (type === 'expense') refetchExpenses(); else refetchIncomes(); setRecurringRefresh(value => value + 1) }} />}{toast && <div className={`toast ${toast.error ? 'error' : ''}`} role="status">{toast.message}<button type="button" onClick={() => setToast(null)} aria-label={t('cancel')}>×</button></div>}</>
 }
