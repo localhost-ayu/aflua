@@ -112,6 +112,9 @@ class RecurringOccurrenceService
         return DB::transaction(function () use ($occurrence) {
             $locked = RecurringOccurrence::query()->lockForUpdate()->findOrFail($occurrence->id);
             abort_unless($locked->status === 'skipped', 409, 'occurrence_not_skipped');
+            $rule = $locked->rule;
+            abort_if($rule->ends_on && $this->effectiveDate($rule, $locked->year, $locked->month)
+                ->greaterThan($rule->ends_on), 409, 'rule_expired');
             $locked->update(['status' => 'pending', 'auto_confirm_suppressed' => true]);
 
             return $locked->load('rule.category');
