@@ -7,6 +7,7 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#2f3533' : '#f7f4ed')
     localStorage.setItem('aflua-theme', theme)
   }, [theme])
 
