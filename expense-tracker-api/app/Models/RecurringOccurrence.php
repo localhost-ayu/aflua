@@ -8,13 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class RecurringOccurrence extends Model
 {
     protected $fillable = [
-        'year', 'month', 'status', 'linked_expense_id', 'linked_income_id', 'auto_confirmed_at',
+        'year', 'month', 'status', 'linked_expense_id', 'linked_income_id',
+        'auto_confirmed_at', 'auto_confirm_suppressed',
     ];
 
     protected $casts = [
         'year' => 'integer',
         'month' => 'integer',
         'auto_confirmed_at' => 'datetime',
+        'auto_confirm_suppressed' => 'boolean',
     ];
 
     public function rule(): BelongsTo
