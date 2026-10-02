@@ -161,7 +161,8 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .recurring-rule small { color: var(--text-2); font-weight: 400; }
 .rule-editor { margin: 1rem 0 .5rem; }
 .rule-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
-.rule-buttons { display: flex; gap: .5rem; margin-top: .8rem; }
+.rule-buttons { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .8rem; }
+.entry-recurring-tag { display: inline-block; margin-left: .5rem; color: var(--brand-dark); font-size: .72rem; font-weight: 700; }
 .table-wrap { overflow-x: auto; }
 .table-wrap table { width: 100%; border-collapse: collapse; font-size: .875rem; }
 .table-wrap th { padding: .85rem 1.25rem; text-align: left; background: var(--surface-2); color: var(--text-2); font-size: .73rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
@@ -199,6 +200,10 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .modal-overlay.is-closing .modal-card { animation: modal-out .18s ease both; }
 .modal-header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; margin-bottom: 1.4rem; }
 .modal-header h3 { margin: 0; font-size: 1.5rem; }
+.choice-dialog h3 { margin-bottom: .5rem; }
+.choice-dialog .page-subtitle { margin-bottom: 1.3rem; }
+.choice-actions { display: grid; gap: .6rem; }
+.choice-actions .btn { width: 100%; }
 .repeat-options { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: .25rem; }
 .repeat-details { padding: .8rem 0 0 1.55rem; animation: fade-in .18s ease both; }
 .repeat-details .page-subtitle { margin: 0 0 .8rem; }
