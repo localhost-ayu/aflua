@@ -21,6 +21,7 @@ export default function ExpensesPage() {
   const [recurringRefresh, setRecurringRefresh] = useState(0)
   const [deletingEntry, setDeletingEntry] = useState(null)
   const [deleteBusy, setDeleteBusy] = useState(false)
+  const [activeTool, setActiveTool] = useState(null)
   const { t, monthName, categoryName, currency, date } = useI18n()
   const { data: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useFetch('/categories')
   const expensesUrl = useMemo(() => {
@@ -95,8 +96,10 @@ export default function ExpensesPage() {
       <div className="form-group"><label htmlFor="filter-year">{t('year')}</label><select id="filter-year" value={year} onChange={event => setYear(event.target.value)}><option value="">{t('allYears')}</option>{years.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
       {hasFilters && <button className="btn btn-ghost btn-sm" onClick={() => { setTypeFilter('all'); setCategoryId(''); setMonth(''); setYear('') }}>{t('clearFilters')}</button>}
     </div></div>
-    <CategoryManager categories={categories ?? []} loading={categoriesLoading} error={categoriesError} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
-    <RecurringPanel month={Number(month) || currentMonth} year={Number(year) || currentYear} refreshToken={recurringRefresh} onChanged={() => { refetchExpenses(); refetchIncomes() }} onFeedback={handleCategoryFeedback} />
+    <div className="entry-tools mb-3">
+      <CategoryManager expanded={activeTool === 'categories'} onToggle={() => setActiveTool(value => value === 'categories' ? null : 'categories')} categories={categories ?? []} loading={categoriesLoading} error={categoriesError} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
+      <RecurringPanel expanded={activeTool === 'recurrences'} onToggle={() => setActiveTool(value => value === 'recurrences' ? null : 'recurrences')} month={Number(month) || currentMonth} year={Number(year) || currentYear} refreshToken={recurringRefresh} onChanged={() => { refetchExpenses(); refetchIncomes() }} onFeedback={handleCategoryFeedback} />
+    </div>
     {(expensesError || incomesError) && <div className="alert alert-error" role="alert">{expensesError || incomesError}</div>}
     {loading && (!expenses || !incomes) && <div className="table-wrap skeleton-table" aria-label={t('loading')}>{Array.from({ length: 5 }, (_, index) => <div key={index} className="skeleton skeleton-row" />)}</div>}
     {expenses && incomes && <div className="expenses-content" aria-busy={loading}>{entries.length === 0 ? <div className="empty-state"><span className="empty-state-icon" aria-hidden="true">○</span><p>{t('noEntries')}</p></div> : <div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('description')}</th><th>{t('entryType')}</th><th>{t('category')}</th><th className="text-right">{t('amount')}</th><th className="text-right">{t('actions')}</th></tr></thead><tbody>{entries.map(entry => <tr key={`${entry.entryType}-${entry.id}`}>

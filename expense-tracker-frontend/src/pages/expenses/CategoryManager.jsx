@@ -2,7 +2,7 @@ import { useState } from 'react'
 import api from '../../api/axios'
 import { useI18n } from '../../i18n/I18nContext'
 
-export default function CategoryManager({ categories = [], loading, error, onChanged, onFeedback }) {
+export default function CategoryManager({ expanded, onToggle, categories = [], loading, error, onChanged, onFeedback }) {
   const { t, categoryName } = useI18n()
   const [name, setName] = useState('')
   const [editingId, setEditingId] = useState(null)
@@ -60,8 +60,12 @@ export default function CategoryManager({ categories = [], loading, error, onCha
     }
   }
 
-  return <details className="card category-manager mb-3">
-    <summary>{t('manageCategories')}</summary>
+  return <>
+    <button type="button" className="entry-tool-button category-tool" aria-expanded={expanded} aria-controls="category-management" onClick={onToggle}>
+      <span>{t('categoriesTool')}</span><span className="entry-tool-count">{categories.length}</span><span className="entry-tool-chevron" aria-hidden="true">⌄</span>
+    </button>
+    <section id="category-management" className="card category-manager entry-tool-panel" hidden={!expanded} aria-labelledby="category-management-title">
+    <h3 id="category-management-title">{t('manageCategories')}</h3>
     <p className="category-help">{t('categoryHelp')}</p>
     {error && <div className="alert alert-error" role="alert">{error}</div>}
     {loading && !categories.length && <div aria-label={t('loading')}><div className="skeleton skeleton-row" /><div className="skeleton skeleton-row" /></div>}
@@ -82,5 +86,5 @@ export default function CategoryManager({ categories = [], loading, error, onCha
       <label htmlFor="new-category-name">{t('newCategory')}</label>
       <div><input id="new-category-name" value={name} onChange={event => setName(event.target.value)} maxLength={255} placeholder={t('categoryName')} required /><button className="btn btn-secondary btn-sm" type="submit" disabled={busy || !name.trim()}>{t('addCategory')}</button></div>
     </form>
-  </details>
+  </section></>
 }

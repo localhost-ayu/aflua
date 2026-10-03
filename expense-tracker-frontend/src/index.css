@@ -129,9 +129,20 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .entry-kind { display: inline-block; padding: .2rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 700; background: var(--surface-3); color: var(--text-2); }
 .entry-kind.income { background: var(--brand-light); color: var(--brand-dark); }
 .income-amount { color: var(--brand-dark); }
-.category-manager { padding: 1rem 1.55rem; }
-.category-manager summary { cursor: pointer; color: var(--brand); font-weight: 700; }
-.category-manager summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.entry-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+.entry-tool-button { display: flex; align-items: center; gap: .55rem; min-height: 44px; padding: .65rem .9rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text-2); font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; transition: background .18s ease, border-color .18s ease; }
+.entry-tool-button:hover, .entry-tool-button[aria-expanded='true'] { background: var(--surface-3); border-color: var(--border-strong); color: var(--brand-dark); }
+.entry-tool-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.category-tool { grid-column: 1; grid-row: 1; }
+.recurring-tool { grid-column: 2; grid-row: 1; }
+.entry-tool-count { color: var(--text-2); font-size: .75rem; font-weight: 400; }
+.entry-tool-chevron { margin-left: auto; transition: transform .18s ease; }
+.entry-tool-button[aria-expanded='true'] .entry-tool-chevron { transform: rotate(180deg); }
+.entry-tool-loading { width: 28px; height: 18px; }
+.entry-tool-error { color: var(--red); }
+.entry-tool-panel { grid-column: 1 / -1; grid-row: 2; animation: fade-in .18s ease both; }
+.entry-tool-panel[hidden] { display: none; }
+.category-manager h3 { margin: 0; font-size: 1.35rem; }
 .category-help { margin: 1rem 0; color: var(--text-2); font-size: .85rem; }
 .category-list { list-style: none; padding: 0; margin: 0 0 1.25rem; }
 .category-list li { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: .75rem; border-bottom: 1px solid var(--border); }
@@ -142,7 +153,6 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
 .category-edit input:not([type='color']), .category-create input { flex: 1 1 160px; min-width: 0; }
 .category-edit input[type='color'] { width: 44px; padding: .25rem; cursor: pointer; }
 .category-create label { display: block; margin-bottom: .5rem; font-size: .77rem; font-weight: 700; color: var(--text-2); }
-.recurring-panel { margin-top: 1rem; }
 .recurring-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
 .recurring-heading h3 { margin-bottom: .65rem; font-size: 1.35rem; }
 .pending-count { padding: .25rem .6rem; border-radius: 999px; background: var(--brand-light); color: var(--brand-dark); font-size: .75rem; font-weight: 700; white-space: nowrap; }
@@ -239,6 +249,9 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
   .grid-2 { grid-template-columns: 1fr; }
   .balance-grid { grid-template-columns: 1fr; }
   .rule-fields { grid-template-columns: 1fr; }
+  .entry-tool-button { gap: .35rem; padding: .6rem .65rem; font-size: .8rem; }
+  .entry-tool-button .pending-count { font-size: .7rem; padding: .15rem .4rem; }
+  .entry-tool-panel { padding: 1rem; }
   .recurring-actions { width: 100%; }
   .period-filters { width: 100%; }
   .period-filters .form-group { flex: 1; }
@@ -247,4 +260,11 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
   .auth-card { padding: 2rem 1.5rem; }
   .auth-theme { top: 2rem; right: 1.5rem; }
   .auth-tools { top: 2rem; right: 1.5rem; }
+}
+
+@media (max-width: 480px) {
+  .entry-tool-button { display: grid; grid-template-columns: minmax(0, 1fr) auto; text-align: left; }
+  .entry-tool-button > span:first-child { grid-column: 1; grid-row: 1; }
+  .entry-tool-count, .entry-tool-button .pending-count, .entry-tool-loading, .entry-tool-error { grid-column: 1; grid-row: 2; justify-self: start; }
+  .entry-tool-chevron { grid-column: 2; grid-row: 1 / 3; }
 }
