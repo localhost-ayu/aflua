@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Navbar from '../../components/ui/Navbar'
 import { useFetch } from '../../hooks/useFetch'
 import { useI18n } from '../../i18n/I18nContext'
@@ -9,10 +10,13 @@ import ChoiceDialog from '../../components/ui/ChoiceDialog'
 import api from '../../api/axios'
 
 export default function ExpensesPage() {
+  const [searchParams] = useSearchParams()
+  const linkedMonth = Number(searchParams.get('month'))
+  const linkedYear = Number(searchParams.get('year'))
   const [typeFilter, setTypeFilter] = useState('all')
   const [categoryId, setCategoryId] = useState('')
-  const [month, setMonth] = useState('')
-  const [year, setYear] = useState('')
+  const [month, setMonth] = useState(Number.isInteger(linkedMonth) && linkedMonth >= 1 && linkedMonth <= 12 ? String(linkedMonth) : '')
+  const [year, setYear] = useState(Number.isInteger(linkedYear) && linkedYear >= 1 && linkedYear <= 9999 ? String(linkedYear) : '')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState(null)
   const [modalType, setModalType] = useState('expense')
@@ -21,7 +25,7 @@ export default function ExpensesPage() {
   const [recurringRefresh, setRecurringRefresh] = useState(0)
   const [deletingEntry, setDeletingEntry] = useState(null)
   const [deleteBusy, setDeleteBusy] = useState(false)
-  const [activeTool, setActiveTool] = useState(null)
+  const [activeTool, setActiveTool] = useState(searchParams.get('panel') === 'recurrences' ? 'recurrences' : null)
   const { t, monthName, categoryName, currency, date } = useI18n()
   const { data: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useFetch('/categories')
   const expensesUrl = useMemo(() => {
@@ -45,7 +49,7 @@ export default function ExpensesPage() {
   ].sort((a, b) => b.entryDate.localeCompare(a.entryDate) || b.id - a.id), [expenses, incomes, typeFilter, categoryId])
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().getMonth() + 1
-  const years = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2]
+  const years = [...new Set([currentYear + 1, currentYear, currentYear - 1, currentYear - 2, ...(year ? [Number(year)] : [])])].sort((a, b) => b - a)
   const hasFilters = typeFilter !== 'all' || categoryId || month || year
   const loading = expensesLoading || incomesLoading
 
