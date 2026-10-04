@@ -51,7 +51,8 @@ class DashboardController extends Controller
             ->filter(function ($occurrence) use ($recurrences, $year, $month) {
                 $dueDate = $recurrences->effectiveDate($occurrence->rule, $year, $month);
 
-                return $dueDate->greaterThanOrEqualTo($occurrence->rule->starts_on)
+                // The manually created first cycle can use a different day from future cycles.
+                return $dueDate->startOfMonth()->greaterThanOrEqualTo($occurrence->rule->starts_on->toImmutable()->startOfMonth())
                     && (! $occurrence->rule->ends_on || $dueDate->lessThanOrEqualTo($occurrence->rule->ends_on));
             })
             ->map(fn ($occurrence) => [
