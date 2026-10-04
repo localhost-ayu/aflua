@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Navbar from '../../components/ui/Navbar'
 import { useFetch } from '../../hooks/useFetch'
 import { useI18n } from '../../i18n/I18nContext'
@@ -9,10 +10,13 @@ import ChoiceDialog from '../../components/ui/ChoiceDialog'
 import api from '../../api/axios'
 
 export default function ExpensesPage() {
+  const [searchParams] = useSearchParams()
+  const linkedMonth = Number(searchParams.get('month'))
+  const linkedYear = Number(searchParams.get('year'))
   const [typeFilter, setTypeFilter] = useState('all')
   const [categoryId, setCategoryId] = useState('')
-  const [month, setMonth] = useState('')
-  const [year, setYear] = useState('')
+  const [month, setMonth] = useState(Number.isInteger(linkedMonth) && linkedMonth >= 1 && linkedMonth <= 12 ? String(linkedMonth) : '')
+  const [year, setYear] = useState(Number.isInteger(linkedYear) && linkedYear >= 1 && linkedYear <= 9999 ? String(linkedYear) : '')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState(null)
   const [modalType, setModalType] = useState('expense')
@@ -21,6 +25,7 @@ export default function ExpensesPage() {
   const [recurringRefresh, setRecurringRefresh] = useState(0)
   const [deletingEntry, setDeletingEntry] = useState(null)
   const [deleteBusy, setDeleteBusy] = useState(false)
+  const [activeTool, setActiveTool] = useState(searchParams.get('panel') === 'recurrences' ? 'recurrences' : null)
   const { t, monthName, categoryName, currency, date } = useI18n()
   const { data: categories, loading: categoriesLoading, error: categoriesError, refetch: refetchCategories } = useFetch('/categories')
   const expensesUrl = useMemo(() => {
@@ -44,7 +49,7 @@ export default function ExpensesPage() {
   ].sort((a, b) => b.entryDate.localeCompare(a.entryDate) || b.id - a.id), [expenses, incomes, typeFilter, categoryId])
   const currentYear = new Date().getFullYear()
   const currentMonth = new Date().getMonth() + 1
-  const years = [currentYear + 1, currentYear, currentYear - 1, currentYear - 2]
+  const years = [...new Set([currentYear + 1, currentYear, currentYear - 1, currentYear - 2, ...(year ? [Number(year)] : [])])].sort((a, b) => b - a)
   const hasFilters = typeFilter !== 'all' || categoryId || month || year
   const loading = expensesLoading || incomesLoading
 
@@ -95,8 +100,10 @@ export default function ExpensesPage() {
       <div className="form-group"><label htmlFor="filter-year">{t('year')}</label><select id="filter-year" value={year} onChange={event => setYear(event.target.value)}><option value="">{t('allYears')}</option>{years.map(value => <option key={value} value={value}>{value}</option>)}</select></div>
       {hasFilters && <button className="btn btn-ghost btn-sm" onClick={() => { setTypeFilter('all'); setCategoryId(''); setMonth(''); setYear('') }}>{t('clearFilters')}</button>}
     </div></div>
-    <CategoryManager categories={categories ?? []} loading={categoriesLoading} error={categoriesError} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
-    <RecurringPanel month={Number(month) || currentMonth} year={Number(year) || currentYear} refreshToken={recurringRefresh} onChanged={() => { refetchExpenses(); refetchIncomes() }} onFeedback={handleCategoryFeedback} />
+    <div className="entry-tools mb-3">
+      <CategoryManager expanded={activeTool === 'categories'} onToggle={() => setActiveTool(value => value === 'categories' ? null : 'categories')} categories={categories ?? []} loading={categoriesLoading} error={categoriesError} onChanged={handleCategoryChanged} onFeedback={handleCategoryFeedback} />
+      <RecurringPanel expanded={activeTool === 'recurrences'} onToggle={() => setActiveTool(value => value === 'recurrences' ? null : 'recurrences')} month={Number(month) || currentMonth} year={Number(year) || currentYear} refreshToken={recurringRefresh} onChanged={() => { refetchExpenses(); refetchIncomes() }} onFeedback={handleCategoryFeedback} />
+    </div>
     {(expensesError || incomesError) && <div className="alert alert-error" role="alert">{expensesError || incomesError}</div>}
     {loading && (!expenses || !incomes) && <div className="table-wrap skeleton-table" aria-label={t('loading')}>{Array.from({ length: 5 }, (_, index) => <div key={index} className="skeleton skeleton-row" />)}</div>}
     {expenses && incomes && <div className="expenses-content" aria-busy={loading}>{entries.length === 0 ? <div className="empty-state"><span className="empty-state-icon" aria-hidden="true">○</span><p>{t('noEntries')}</p></div> : <div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('description')}</th><th>{t('entryType')}</th><th>{t('category')}</th><th className="text-right">{t('amount')}</th><th className="text-right">{t('actions')}</th></tr></thead><tbody>{entries.map(entry => <tr key={`${entry.entryType}-${entry.id}`}>
