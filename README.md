@@ -1,5 +1,11 @@
 # aflua
 
+[English](#english) · [Português do Brasil](#portugues) · [License / Licença](#license)
+
+Source-available · Free for noncommercial use · Commercial use requires a separate written agreement
+
+<a id="english"></a>
+
 **A personal cash-flow tracker built with Laravel and React.** Aflua helps people record income and expenses, manage monthly recurrences, and compare their realized balance with what is still expected for the month. This portfolio project began as Expense Tracker, gained a bilingual and more considered interface under the name cifra, and now evolves into aflua: a product identity inspired by the movement of money in and out.
 
 The `expense-tracker-api` and `expense-tracker-frontend` directories retain their original technical names. The repository name can change independently of these paths; the application itself is branded aflua.
@@ -247,3 +253,284 @@ For a manual cash-flow check, record December salary of R$ 5,000, rent of R$ 1,8
 ## About
 
 Built as a portfolio project to practice Laravel, React, Sanctum authentication, REST APIs, data visualization, and full-stack application architecture. The source code uses English identifiers; the product interface supports Brazilian Portuguese and English.
+
+## License
+
+Original aflua code is available under the [PolyForm Noncommercial License 1.0.0](./LICENSE). This is a **source-available project**, not an OSI-approved open source project, because commercial use is not granted by this license.
+
+- **Personal and noncommercial use:** you may use, modify, and share the code for purposes permitted by the license, including personal finance tracking, study, and noncommercial experimentation.
+- **Attribution:** when sharing original or modified code, include the license text or its official URL and preserve the `Required Notice:` lines in [NOTICE](./NOTICE), crediting Nathã Grazzioli Botelho and the original aflua repository. The license grants permission to modify the code, not to remove its required attribution.
+- **Commercial use:** paid apps, subscription services, monetized adaptations, or other commercial uses outside the license's permitted purposes require a separate commercial license and the author's **prior written authorization**. Financial terms, including the author's remuneration, must be negotiated and agreed before commercial use begins. Merely giving credit or sending a request does not grant commercial permission.
+- **Contact:** [open a GitHub issue](https://github.com/localhost-ayu/aflua/issues) describing the intended use and requesting a commercial licensing discussion. No personal email address is published here.
+- **Third-party software:** dependencies and framework/template code retain their own licenses. These project terms do not relicense third-party material or revoke rights previously granted under another license.
+
+The English text in [LICENSE](./LICENSE) is the license; the explanations in this README, in either language, are summaries. The software is provided without warranty, as stated in the license. Any future official hosted service may have its own terms of use; using that service does not automatically grant a commercial license to this source code.
+
+<a id="portugues"></a>
+
+<details>
+<summary><strong>Português do Brasil — documentação completa</strong></summary>
+
+## aflua — Português do Brasil
+
+**Um organizador de fluxo de caixa pessoal desenvolvido com Laravel e React.** O aflua ajuda a registrar ganhos e despesas, gerenciar recorrências mensais e comparar o saldo realizado com o que ainda está previsto para o mês. Este projeto de portfólio começou como Expense Tracker, ganhou uma interface bilíngue e mais cuidadosa sob o nome cifra e evoluiu para aflua: uma identidade inspirada no movimento de entrada e saída do dinheiro.
+
+Os diretórios `expense-tracker-api` e `expense-tracker-frontend` mantêm seus nomes técnicos originais. O nome do repositório pode mudar independentemente desses caminhos; a aplicação usa a marca aflua.
+
+### Evolução do produto
+
+A primeira versão estabeleceu a base full stack: autenticação com Sanctum, endpoints REST protegidos, CRUD de despesas, filtros por categoria e data e gráficos agregados no dashboard. A etapa cifra se concentrou no design do produto e na experiência do frontend. A versão aflua amplia essa base com catálogos de categorias independentes, formulário unificado de ganhos e despesas, recorrências mensais e um dashboard de fluxo de caixa que distingue dinheiro registrado de dinheiro previsto.
+
+| Área | Evolução |
+| --- | --- |
+| Identidade | Marca aflua e favicon com um `a` fluido, verde inspirado em rios, tons neutros quentes, títulos com fonte serifada humanista e detalhes visuais discretos. |
+| Categorias | As categorias padrão são clonadas no cadastro e pertencem a cada usuário; nomes e cores podem ser personalizados sem afetar outras contas. |
+| Fluxo de caixa | Ganhos e despesas compartilham um modal; o dashboard compara saldos realizado e projetado e deixa os valores pendentes visíveis. |
+| Recorrências | Regras mensais criam o primeiro lançamento confirmado, permitem confirmar com valor editável e processar automaticamente, preservando o histórico dos ciclos concluídos. |
+| Temas | Modo claro e modo escuro em grafite quente, com preferência salva localmente. |
+| Idioma | Interface completa em português brasileiro e inglês, incluindo datas, nomes dos meses, moeda, filtros, formulários e gráficos. |
+| Feedback | Skeletons de carregamento, toasts consistentes de sucesso e erro, transições sutis e suporte à preferência por movimento reduzido. |
+| Usabilidade | Modal de lançamento acessível por teclado, fechamento com Escape e controle de foco; painéis compactos de categorias e recorrências; links do dashboard para pendências do período correto; respostas antigas não substituem dados mais recentes. |
+
+Essa evolução demonstra como uma aplicação existente pode ganhar uma identidade de produto mais consistente e um isolamento de dados mais seguro sem uma reescrita.
+
+O sistema visual substitui a interface original violeta, com muitos cards, por uma abordagem mais acolhedora: títulos em Fraunces, textos em DM Sans, superfícies inspiradas em papel, verde como cor da marca e tema escuro em grafite.
+
+### Galeria da interface
+
+| Área | Tema claro | Tema escuro |
+| --- | --- | --- |
+| Dashboard | <img src="./Screenshots/dashboard_light.png" alt="Dashboard do aflua e gráficos de despesas no tema claro" width="420"> | <img src="./Screenshots/dashboard_dark.png" alt="Dashboard do aflua e gráficos de despesas no tema escuro" width="420"> |
+| Despesas | <img src="./Screenshots/expenses_light.png" alt="Filtros e lista de despesas do aflua no tema claro" width="420"> | <img src="./Screenshots/expenses_dark.png" alt="Filtros e lista de despesas do aflua no tema escuro" width="420"> |
+| Adicionar despesa | <img src="./Screenshots/addexpense_light.png" alt="Modal de nova despesa do aflua no tema claro" width="420"> | <img src="./Screenshots/addexpense_dark.png" alt="Modal de nova despesa do aflua no tema escuro" width="420"> |
+
+### Funcionalidades
+
+#### Autenticação
+
+- Cadastro e login de usuários
+- Autenticação por token com Laravel Sanctum
+- Rotas protegidas no frontend e endpoints autenticados na API
+
+#### Gerenciamento de lançamentos
+
+- Criar, editar e excluir ganhos e despesas pelo mesmo modal
+- Alternar entre despesa e ganho; categorias se aplicam apenas às despesas
+- Registrar ganhos avulsos, como bônus, sem repeti-los nos meses seguintes
+- Filtrar lançamentos por tipo, categoria, mês e ano
+- Manter as cores das categorias consistentes entre as tags de despesas e os gráficos
+
+#### Recorrências mensais
+
+- Ativar a repetição mensal dentro do modal de lançamento e escolher o dia do mês
+- Salvar uma nova recorrência também confirma o primeiro lançamento, sem duplicá-lo
+- Meses curtos usam o último dia disponível quando o dia configurado não existe
+- Confirmar pendências com valor editável, pular um mês ou reabri-lo
+- Ajustar valores confirmados ou desfazer a confirmação sem reconfirmar automaticamente o mesmo ciclo
+- Ativar ou desativar regras sem apagar o histórico confirmado
+- Excluir uma regra mantendo os lançamentos vinculados como avulsos ou excluir a regra junto com eles
+- Ao excluir um lançamento recorrente, escolher entre deixar o mês pendente ou pular esse mês
+- A confirmação automática é executada pelo scheduler do Laravel; não ocorre dentro de um GET do dashboard
+
+#### Categorias
+
+- Categorias padrão clonadas para cada nova conta
+- CRUD de categorias com dono e verificações de autorização
+- Nomes e cores hexadecimais editáveis, usados de forma consistente na lista e nos gráficos
+- Despesas existentes preservadas na migração de categorias globais para catálogos individuais
+- Exclusão bloqueada quando a categoria tem despesas ou regras de recorrência vinculadas, até resolver esses vínculos
+
+#### Dashboard e análise
+
+- Recebido, gasto, saldo realizado e saldo projetado no mês selecionado
+- Totais visíveis de ganhos e despesas pendentes, com detalhes expansíveis
+- Link direto para revisar recorrências no mês selecionado
+- Distribuição de despesas por categoria
+- Histórico de ganhos e despesas dos seis meses até o período selecionado, incluindo meses sem movimentação
+- Filtros de mês e ano
+- Gráficos interativos de pizza e barras agrupadas com Recharts e tabela de histórico acessível a leitores de tela
+- Mês e ano como dados brutos da API; rótulos dos períodos, datas e valores formatados no frontend
+
+#### Interface
+
+- Layout responsivo com temas claro e escuro
+- Seletor de idioma PT-BR e EN
+- Preferências de idioma e tema salvas localmente
+- Skeletons de carregamento, feedback das operações e transições sutis
+
+### Tecnologias
+
+| Camada | Tecnologias |
+| --- | --- |
+| Frontend | React 19, Vite, React Router, Axios, Context API, Recharts |
+| Backend | Laravel 13, Laravel Sanctum, API REST, policies de autorização |
+| Banco de dados | MySQL |
+
+### Estrutura do projeto
+
+```text
+raiz-do-repositorio/
+├── expense-tracker-api/
+│   ├── app/
+│   │   ├── Http/Controllers/       # Autenticação, categorias, lançamentos, recorrências, dashboard
+│   │   ├── Models/                 # User, Category, Expense, Income, regras e ocorrências
+│   │   ├── Policies/               # Autorização por dono dos dados
+│   │   └── Services/               # Preparação, confirmação e exclusão de recorrências
+│   ├── database/
+│   │   ├── migrations/
+│   │   └── seeders/
+│   └── routes/api.php
+├── expense-tracker-frontend/
+│   └── src/
+│       ├── api/                    # Cliente Axios e interceptor de token
+│       ├── components/charts/      # Gráficos por categoria e de fluxo de caixa mensal
+│       ├── components/ui/          # Navegação, idioma, rota protegida, pendências
+│       ├── contexts/               # Autenticação e tema
+│       ├── hooks/                  # Busca de dados, preparação do dashboard e erros de formulário
+│       ├── i18n/                   # Traduções e formatação PT-BR / EN
+│       └── pages/                  # Autenticação, dashboard, lançamentos, modal unificado
+└── Screenshots/                   # Capturas da interface nos temas claro e escuro
+```
+
+### Arquitetura
+
+A aplicação React de página única consome a API REST do Laravel por Axios. O cliente anexa um token bearer do Sanctum às requisições autenticadas. O Laravel valida as requisições, restringe categorias, lançamentos e regras de recorrência ao usuário autenticado, aplica policies de autorização e lê ou grava dados no MySQL. A confirmação de uma recorrência cria o lançamento real e o vincula à ocorrência na mesma transação de banco de dados. O endpoint do dashboard retorna agregados e pendências para o frontend.
+
+```text
+React 19 + Router + Context API + Recharts
+                  │ HTTP / JSON
+                  ▼
+Laravel 13 API REST + Sanctum + Policies
+                  │
+                  ▼
+                MySQL
+```
+
+#### Relacionamentos dos dados
+
+- Um `User` possui várias categorias, despesas, ganhos e regras de recorrência.
+- Uma `Category` pertence a um usuário e pode ser usada por despesas e regras de despesas recorrentes.
+- Uma `Expense` pertence a um usuário e a uma categoria.
+- Um `Income` pertence a um usuário e não exige categoria.
+- Uma `RecurringRule` pertence a um usuário e possui ocorrências mensais `RecurringOccurrence`.
+- Cada ocorrência está pendente, confirmada ou pulada; quando confirmada, fica vinculada a uma despesa ou ganho.
+- Uma restrição única por regra, ano e mês evita ocorrências mensais duplicadas.
+
+O cadastro cria o usuário e seu catálogo de categorias padrão em uma única transação. A migração de ownership clona as antigas categorias globais para cada conta existente e remapeia as despesas históricas para as cópias corretas.
+
+#### Consultas do dashboard
+
+O dashboard usa somas, agrupamentos por categoria e filtros de data restritos ao usuário autenticado. Os cálculos de saldo usam centavos inteiros. O período selecionado retorna dois saldos:
+
+```text
+saldo realizado = ganhos registrados − despesas registradas
+saldo projetado = saldo realizado + ganhos pendentes − despesas pendentes
+```
+
+Ocorrências pendentes de regras ativas e vigentes contribuem para a projeção. Ocorrências confirmadas e puladas não contribuem; regras pausadas ou vencidas não acrescentam valores previstos. Os valores pendentes seguem o valor atual da regra, enquanto valores confirmados vêm do lançamento histórico.
+
+O frontend primeiro chama `POST /api/recurring-occurrences/prepare` com mês e ano selecionados e depois chama `GET /api/dashboard`. A preparação é idempotente e separada da leitura; o GET do dashboard não gera nem confirma ocorrências. Consumidores da API devem usar essa sequência antes de consultar um período ainda não preparado.
+
+A resposta mantém `total_this_month`, `total_income`, `net_balance`, `by_category` e `last_six_months` e acrescenta:
+
+| Campo | Significado |
+| --- | --- |
+| `month`, `year` | Período selecionado em valores numéricos. |
+| `realized_balance` | Ganhos registrados menos despesas registradas; também retornado como `net_balance`. |
+| `projected_balance` | Saldo realizado mais ganhos pendentes menos despesas pendentes. |
+| `pending_income`, `pending_expense` | Totais previstos separados. |
+| `pending_incomes`, `pending_expenses` | Listas separadas com descrição, valor, data efetiva e categoria, quando aplicável. |
+
+Cada item de `last_six_months` contém `month` e `year` numéricos, `total_income`, `total_expenses` e `realized_balance`. O antigo total de despesas em `total` é preservado; o rótulo localizado `label` foi substituído pela formatação no frontend. A janela de seis meses acompanha o período selecionado, em vez da data atual.
+
+### Conceitos de engenharia
+
+Desenvolvimento full stack · design de APIs REST · autenticação de SPA com Sanctum · React Context API · rotas protegidas · hooks personalizados · CRUD · agregação SQL · policies de autorização · confirmação de recorrências em transação · idempotência · projeções de fluxo de caixa · interface baseada em componentes · visualização de dados · internacionalização · estados de interação acessíveis.
+
+### Execução local
+
+#### Backend
+
+A partir da raiz do repositório:
+
+```bash
+cd expense-tracker-api
+composer install
+cp .env.example .env
+```
+
+Configure a conexão MySQL em `expense-tracker-api/.env` e execute:
+
+```bash
+php artisan key:generate
+php artisan migrate --seed
+php artisan serve
+```
+
+A API usa `http://localhost:8000` por padrão.
+
+Para a confirmação automática mensal, mantenha o scheduler do Laravel em execução em um terminal separado durante o desenvolvimento local:
+
+```bash
+php artisan schedule:work
+```
+
+O processador de recorrências está agendado diariamente às 00:10 no fuso horário da aplicação. Para processar uma vez as ocorrências vencidas:
+
+```bash
+php artisan recurrences:process
+```
+
+Sem o scheduler, as pendências ainda podem ser preparadas e confirmadas manualmente pela interface. Meses futuros podem ser consultados sem confirmar seus lançamentos previstos.
+
+#### Frontend
+
+Em outro terminal, a partir da raiz do repositório:
+
+```bash
+cd expense-tracker-frontend
+npm install
+npm run dev
+```
+
+O cliente Axios aponta atualmente para `http://localhost:8000/api`.
+
+#### Verificação
+
+```bash
+# Em expense-tracker-api (os testes usam SQLite isolado em memória)
+php artisan test
+
+# Em expense-tracker-frontend
+npm run lint
+npm run build
+```
+
+Para validar o fluxo de caixa manualmente, registre em dezembro um salário de R$ 5.000, aluguel de R$ 1.800, bônus avulso de R$ 5.000 e outras despesas de R$ 600. Dezembro deve mostrar R$ 10.000 recebidos, R$ 2.400 gastos e R$ 7.600 realizados. Em janeiro, o bônus não deve se repetir; o aluguel pendente entra nas despesas projetadas sem reduzir o realizado até sua confirmação.
+
+### Próximos passos
+
+- Planejamento de orçamento, metas financeiras e exportação de relatórios
+- Paginação e filtros no servidor para históricos maiores de lançamentos
+- Divisão do código por rota para reduzir o bundle do frontend
+- Configuração da URL da API por ambiente
+- Ampliação da cobertura automatizada de lançamentos e recorrências
+- Análise de consultas e índices e agregação no banco para históricos maiores de fluxo de caixa
+
+### Sobre o projeto
+
+Desenvolvido como projeto de portfólio para praticar Laravel, React, autenticação com Sanctum, APIs REST, visualização de dados e arquitetura de aplicações full stack. O código usa identificadores em inglês; a interface suporta português brasileiro e inglês.
+
+### Licença e uso comercial
+
+O código original do aflua está disponível sob a [PolyForm Noncommercial License 1.0.0](./LICENSE). O projeto é **source-available**, com código acessível, e não open source segundo a definição da OSI, porque a licença não concede uso comercial.
+
+- **Uso pessoal e não comercial:** é permitido usar, modificar e compartilhar o código para as finalidades previstas na licença, incluindo controle de finanças pessoais, estudo e experimentação não comercial.
+- **Créditos:** ao compartilhar o código original ou modificado, inclua a licença ou seu endereço oficial e preserve as linhas `Required Notice:` de [NOTICE](./NOTICE), creditando Nathã Grazzioli Botelho e o repositório original do aflua. A permissão para modificar o código não permite remover esses avisos de autoria.
+- **Uso comercial:** aplicativos pagos, serviços por assinatura, adaptações monetizadas ou outros usos comerciais fora das finalidades permitidas pela licença exigem uma licença comercial separada e **autorização prévia por escrito** do autor. As condições financeiras, incluindo a remuneração do autor, precisam ser negociadas e acordadas antes do início do uso comercial. Dar créditos ou enviar uma solicitação não concede autorização comercial.
+- **Contato:** [abra uma issue no GitHub](https://github.com/localhost-ayu/aflua/issues) descrevendo a finalidade pretendida e solicitando uma conversa sobre licenciamento comercial. Nenhum e-mail pessoal é publicado aqui.
+- **Software de terceiros:** dependências e código de frameworks/templates mantêm suas próprias licenças. Estes termos não alteram o licenciamento de terceiros nem revogam direitos concedidos anteriormente sob outra licença.
+
+O texto em inglês de [LICENSE](./LICENSE) é a licença aplicável; as explicações do README nos dois idiomas são resumos. O software é fornecido sem garantia, conforme a licença. Um eventual serviço oficial hospedado poderá ter termos de uso próprios; usar esse serviço não concede automaticamente uma licença comercial para este código-fonte.
+
+</details>
