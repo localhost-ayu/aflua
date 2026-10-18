@@ -309,3 +309,13 @@ h1, h2, h3, .brand-word, .stat-value { font-family: 'Fraunces', Georgia, serif; 
   .entry-tool-count, .entry-tool-button .pending-count, .entry-tool-loading, .entry-tool-error { grid-column: 1; grid-row: 2; justify-self: start; }
   .entry-tool-chevron { grid-column: 2; grid-row: 1 / 3; }
 }
+
+/* ── modo demonstração (build com VITE_DEMO=true) ── */
+.demo-bar { background: var(--surface-3); border-bottom: 1px solid var(--border); font-size: .82rem; color: var(--text-2); }
+.demo-bar-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .35rem 1rem; padding-block: .45rem; }
+.demo-bar p { display: flex; align-items: center; gap: .6rem; margin: 0; }
+.demo-actions { display: flex; flex-wrap: wrap; gap: .25rem; }
+.demo-pill { display: inline-block; padding: .12rem .55rem; border-radius: 999px; background: var(--accent); color: var(--surface); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.auth-brand .demo-pill { margin-left: .5rem; }
+.demo-error { color: var(--red); font-weight: 600; }
+.demo-privacy { color: var(--text-2); font-size: .9rem; }
