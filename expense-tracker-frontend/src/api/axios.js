@@ -1,11 +1,15 @@
 import axios from 'axios'
+import { demoAdapter } from '../demo/adapter'
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
+  // Modo demonstração (build com VITE_DEMO=true): as requisições são respondidas no
+  // próprio navegador, com dados no localStorage. Fora dele, o adapter nem entra no build.
+  ...(import.meta.env.VITE_DEMO === 'true' ? { adapter: demoAdapter } : {}),
 })
 
 // Interceptor de request — injeta o token em toda requisição

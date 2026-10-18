@@ -10,6 +10,8 @@ Source-available · Free for noncommercial use · Commercial use requires a sepa
 
 The `expense-tracker-api` and `expense-tracker-frontend` directories retain their original technical names. The repository name can change independently of these paths; the application itself is branded aflua.
 
+**Live demo: [aflua.grazzioli.dev](https://aflua.grazzioli.dev)** — the real interface with six months of fictional data. It runs entirely in your browser: nothing is sent to a server, so no personal data is collected (see [Demo mode](#demo-mode)).
+
 ## Product evolution
 
 The first version established the full-stack foundation: Sanctum authentication, protected REST endpoints, expense CRUD, category and date filters, and aggregated dashboard charts. The cifra iteration focused on product design and frontend experience. The current aflua iteration builds on that foundation with independent category catalogs, a unified income/expense form, monthly recurrences, and a cash-flow dashboard that distinguishes recorded money from projected money.
@@ -226,7 +228,19 @@ npm install
 npm run dev
 ```
 
-The Axios client currently points to `http://localhost:8000/api`.
+The Axios client points to `VITE_API_URL`, or `http://localhost:8000/api` when it is not set.
+
+<a id="demo-mode"></a>
+### Demo mode
+
+`npm run dev:demo` (or `npm run build:demo`) builds the same frontend with `VITE_DEMO=true`. In that mode an Axios adapter answers every request in the browser instead of the network: `src/demo/api.js` reimplements the Laravel routes, recurrence services and dashboard maths over data kept in `localStorage`, returning the same JSON shapes and the same 401/404/409/422 errors. Screens, hooks and error handling are unchanged.
+
+- Sign-in is replaced by a welcome screen; there is no account or password.
+- Six months of fictional data are generated relative to today. The daily scheduler (`recurrences:process`) runs on the first request of each day.
+- A bar at the top exports the data as JSON, imports it back, or starts over.
+- Outside demo builds the adapter is not bundled at all.
+
+The JavaScript port must follow the PHP rules; `src/demo/*.test.js` covers recurrences, dashboard totals, validation and the sample data.
 
 ### Verification
 
@@ -236,8 +250,12 @@ php artisan test
 
 # In expense-tracker-frontend
 npm run lint
+npm test
 npm run build
+npm run build:demo
 ```
+
+CI runs all of the above on every pull request.
 
 For a manual cash-flow check, record December salary of R$ 5,000, rent of R$ 1,800, a one-off bonus of R$ 5,000, and other expenses of R$ 600. December should show R$ 10,000 received, R$ 2,400 spent, and R$ 7,600 realized. In January, the bonus must not repeat; pending rent contributes to projected expenses without reducing the realized balance until confirmed.
 
@@ -246,7 +264,6 @@ For a manual cash-flow check, record December salary of R$ 5,000, rent of R$ 1,8
 - Budget planning, financial goals, and report exports
 - Pagination and server-side filtering for larger transaction histories
 - Route-level code splitting to reduce the frontend bundle
-- Environment-based API configuration
 - Broader automated coverage for transaction and recurrence flows
 - Query/index profiling and database-side aggregation for larger cash-flow histories
 
@@ -276,6 +293,8 @@ The English text in [LICENSE](./LICENSE) is the license; the explanations in thi
 **Um organizador de fluxo de caixa pessoal desenvolvido com Laravel e React.** O aflua ajuda a registrar ganhos e despesas, gerenciar recorrências mensais e comparar o saldo realizado com o que ainda está previsto para o mês. Este projeto de portfólio começou como Expense Tracker, ganhou uma interface bilíngue e mais cuidadosa sob o nome cifra e evoluiu para aflua: uma identidade inspirada no movimento de entrada e saída do dinheiro.
 
 Os diretórios `expense-tracker-api` e `expense-tracker-frontend` mantêm seus nomes técnicos originais. O nome do repositório pode mudar independentemente desses caminhos; a aplicação usa a marca aflua.
+
+**Demonstração: [aflua.grazzioli.dev](https://aflua.grazzioli.dev)** — a interface real com seis meses de dados fictícios. Ela roda inteira no navegador: nada é enviado a servidor nenhum, então nenhum dado pessoal é coletado (veja [Modo demonstração](#modo-demonstracao)).
 
 ### Evolução do produto
 
@@ -493,7 +512,19 @@ npm install
 npm run dev
 ```
 
-O cliente Axios aponta atualmente para `http://localhost:8000/api`.
+O cliente Axios aponta para `VITE_API_URL`, ou para `http://localhost:8000/api` quando ela não está definida.
+
+<a id="modo-demonstracao"></a>
+#### Modo demonstração
+
+`npm run dev:demo` (ou `npm run build:demo`) gera o mesmo frontend com `VITE_DEMO=true`. Nesse modo, um adapter do Axios responde às requisições no próprio navegador em vez da rede: `src/demo/api.js` reimplementa as rotas do Laravel, os serviços de recorrência e as contas do dashboard sobre dados guardados no `localStorage`, devolvendo o mesmo formato de JSON e os mesmos erros 401/404/409/422. Telas, hooks e tratamento de erros não mudam.
+
+- O login vira uma tela de boas-vindas, sem conta nem senha.
+- Seis meses de dados fictícios são gerados em relação à data de hoje. O agendador diário (`recurrences:process`) roda na primeira requisição de cada dia.
+- Uma faixa no topo exporta os dados em JSON, importa de volta ou recomeça do zero.
+- Fora do build de demonstração, o adapter nem entra no bundle.
+
+A versão em JavaScript precisa seguir as regras do PHP; `src/demo/*.test.js` cobre recorrências, totais do dashboard, validação e os dados de exemplo.
 
 #### Verificação
 
@@ -503,8 +534,12 @@ php artisan test
 
 # Em expense-tracker-frontend
 npm run lint
+npm test
 npm run build
+npm run build:demo
 ```
+
+O CI roda tudo isso em cada pull request.
 
 Para validar o fluxo de caixa manualmente, registre em dezembro um salário de R$ 5.000, aluguel de R$ 1.800, bônus avulso de R$ 5.000 e outras despesas de R$ 600. Dezembro deve mostrar R$ 10.000 recebidos, R$ 2.400 gastos e R$ 7.600 realizados. Em janeiro, o bônus não deve se repetir; o aluguel pendente entra nas despesas projetadas sem reduzir o realizado até sua confirmação.
 
@@ -513,7 +548,6 @@ Para validar o fluxo de caixa manualmente, registre em dezembro um salário de R
 - Planejamento de orçamento, metas financeiras e exportação de relatórios
 - Paginação e filtros no servidor para históricos maiores de lançamentos
 - Divisão do código por rota para reduzir o bundle do frontend
-- Configuração da URL da API por ambiente
 - Ampliação da cobertura automatizada de lançamentos e recorrências
 - Análise de consultas e índices e agregação no banco para históricos maiores de fluxo de caixa
 
